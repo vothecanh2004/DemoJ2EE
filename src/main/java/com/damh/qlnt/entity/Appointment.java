@@ -39,4 +39,5 @@ public class Appointment {
 
     @Column(columnDefinition = "TEXT")
     private String disputeNote;
+
 }

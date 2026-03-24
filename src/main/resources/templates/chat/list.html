@@ -1,0 +1,37 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{${#authorization.expression('hasRole(''ADMIN'')') ? 'admin/layout' : (#authorization.expression('hasRole(''OWNER'')') ? 'owner/layout' : 'user/layout')}}">
+<head>
+    <title>Tin Nhắn</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-800">Hộp Thư</h2>
+        <p class="text-gray-500">Quản lý các cuộc trò chuyện của bạn.</p>
+    </div>
+
+    <div class="glass rounded-2xl shadow-sm border border-white/50 overflow-hidden bg-white/70">
+        <div th:if="${#lists.isEmpty(chattedUsers)}" class="p-12 text-center text-gray-500">
+            <i class="far fa-comments text-5xl mb-4 text-gray-300"></i>
+            <p>Hộp thư của bạn đang trống.</p>
+            <a th:href="@{/user/rooms}" class="mt-4 inline-block text-blue-600 hover:underline">Tìm phòng để trò chuyện ngay</a>
+        </div>
+
+        <div th:each="user : ${chattedUsers}" class="border-b border-gray-100 last:border-0 hover:bg-white/40 transition">
+            <a th:href="@{/chat/{id}(id=${user.id})}" class="flex items-center p-6 space-x-4">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                    <span th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-gray-900" th:text="${user.username}">Tên Người Dùng</h4>
+                    <p class="text-sm text-gray-500 italic">Nhấn để xem tin nhắn</p>
+                </div>
+                <div class="text-blue-500">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

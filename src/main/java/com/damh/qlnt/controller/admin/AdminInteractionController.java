@@ -18,13 +18,31 @@ public class AdminInteractionController {
 
     @GetMapping("/posts")
     public String listPosts(Model model) {
-        model.addAttribute("posts", interactionService.getAllActivePosts());
+        model.addAttribute("posts", interactionService.getAllPosts());
         return "admin/posts/list";
     }
 
     @PostMapping("/posts/{id}/hide")
     public String hidePost(@PathVariable Long id) {
         interactionService.hidePost(id);
+        return "redirect:/admin/interactions/posts";
+    }
+
+    @PostMapping("/posts/{id}/unhide")
+    public String unhidePost(@PathVariable Long id) {
+        interactionService.unhidePost(id);
+        return "redirect:/admin/interactions/posts";
+    }
+
+    @PostMapping("/posts/{id}/approve")
+    public String approvePost(@PathVariable Long id) {
+        interactionService.approvePost(id);
+        return "redirect:/admin/interactions/posts";
+    }
+
+    @PostMapping("/posts/{id}/reject")
+    public String rejectPost(@PathVariable Long id) {
+        interactionService.rejectPost(id);
         return "redirect:/admin/interactions/posts";
     }
 }

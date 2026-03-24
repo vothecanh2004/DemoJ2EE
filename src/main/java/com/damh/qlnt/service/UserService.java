@@ -7,4 +7,6 @@ public interface UserService {
     User registerNewUser(UserRegistrationDto registrationDto);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+    User findById(Long id);
+    void updateReputation(Long userId, int delta);
 }

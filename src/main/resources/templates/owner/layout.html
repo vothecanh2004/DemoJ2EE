@@ -56,9 +56,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-green-100 text-green-800 transition-colors">
+                    <a th:href="@{/chat}" class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-green-100 text-green-800 transition-colors">
                         <i class="fas fa-comments w-5"></i>
-                        <span class="font-medium">Chat</span>
+                        <span class="font-medium">Tin Nhắn</span>
                     </a>
                 </li>
             </ul>
@@ -94,8 +94,10 @@
         </header>
 
         <!-- Page Content -->
-        <div class="flex-1 overflow-y-auto p-8 relative z-0" layout:fragment="content">
-            <!-- Dynamic Content Injected Here -->
+        <div class="flex-1 overflow-y-auto p-8 relative z-0" id="main-scroll-container">
+            <div layout:fragment="content">
+                <!-- Dynamic Content Injected Here -->
+            </div>
         </div>
     </main>
 </div>

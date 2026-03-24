@@ -23,12 +23,17 @@ public class UserRoomController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public String searchRooms(Model model) {
-        // Find only approved and available rooms
-        List<Room> availableRooms = roomService.getAllRooms().stream()
-                .filter(r -> r.getApprovalStatus() == ApprovalStatus.APPROVED && r.getStatus().name().equals("AVAILABLE"))
-                .collect(Collectors.toList());
-        model.addAttribute("rooms", availableRooms);
+    public String searchRooms(@RequestParam(required = false) String kw,
+                               @RequestParam(required = false) Double minP,
+                               @RequestParam(required = false) Double maxP,
+                               @RequestParam(required = false) Double minA,
+                               Model model) {
+        List<Room> rooms = roomService.searchRooms(kw, minP, maxP, minA);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("kw", kw);
+        model.addAttribute("minP", minP);
+        model.addAttribute("maxP", maxP);
+        model.addAttribute("minA", minA);
         return "user/rooms/list";
     }
 

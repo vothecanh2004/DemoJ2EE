@@ -10,4 +10,5 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByTenant(User tenant);
     List<Appointment> findByOwner(User owner);
+    List<Appointment> findByRoom(com.damh.qlnt.entity.Room room);
 }

@@ -56,4 +56,19 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    @Override
+    public void updateReputation(Long userId, int delta) {
+        User user = findById(userId);
+        int newScore = user.getReputationScore() + delta;
+        // Clamp between 0 and 100
+        newScore = Math.max(0, Math.min(100, newScore));
+        user.setReputationScore(newScore);
+        userRepository.save(user);
+    }
 }

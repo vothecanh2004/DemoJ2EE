@@ -66,4 +66,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         apt.setStatus(AppointmentStatus.COMPLETED);
         appointmentRepository.save(apt);
     }
+
+    @Override
+    public void cancelByAdmin(Long id) {
+        Appointment apt = appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+        apt.setStatus(AppointmentStatus.REJECTED);
+        apt.setDisputeNote("Hủy bởi Hệ thống (Admin)");
+        appointmentRepository.save(apt);
+    }
 }

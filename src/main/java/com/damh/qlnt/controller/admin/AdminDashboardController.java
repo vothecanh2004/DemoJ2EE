@@ -17,10 +17,16 @@ public class AdminDashboardController {
     @GetMapping
     public String dashboard(Model model) {
         model.addAttribute("totalUsers", adminService.getTotalUsers());
+        model.addAttribute("totalOwners", adminService.getTotalOwners());
         model.addAttribute("totalRooms", adminService.getTotalRooms());
         model.addAttribute("totalContracts", adminService.getTotalActiveContracts());
-        // For revenue we could mock it or aggregate from contracts later
-        model.addAttribute("totalRevenue", adminService.getTotalActiveContracts() * 1500000); 
+        model.addAttribute("totalRevenue", adminService.getTotalRevenue());
+        model.addAttribute("occupancyRate", adminService.getOccupancyRate());
+        
+        // New management stats
+        model.addAttribute("pendingRooms", adminService.getPendingRoomsCount());
+        model.addAttribute("pendingPosts", adminService.getPendingPostsCount());
+        
         return "admin/dashboard";
     }
 }

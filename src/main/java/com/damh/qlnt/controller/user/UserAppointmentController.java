@@ -33,9 +33,15 @@ public class UserAppointmentController {
     @PostMapping("/book/{roomId}")
     public String bookAppointment(@PathVariable Long roomId, 
                                   @RequestParam("appointmentDate") String appointmentDateStr, 
-                                  Principal principal) {
+                                  Principal principal,
+                                  org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         User tenant = userRepository.findByUsername(principal.getName()).orElseThrow();
         Room room = roomService.getRoomById(roomId).orElseThrow();
+        
+        if (room.getStatus() != com.damh.qlnt.entity.RoomStatus.AVAILABLE) {
+            redirectAttributes.addFlashAttribute("error", "Phòng này đã được thuê, bạn không thể đặt lịch xem phòng.");
+            return "redirect:/user/rooms/" + roomId;
+        }
         
         Appointment apt = Appointment.builder()
                 .tenant(tenant)
@@ -45,6 +51,7 @@ public class UserAppointmentController {
                 .build();
                 
         appointmentService.bookAppointment(apt);
+        redirectAttributes.addFlashAttribute("success", "Đặt lịch xem phòng thành công!");
         return "redirect:/user/appointments";
     }
 }

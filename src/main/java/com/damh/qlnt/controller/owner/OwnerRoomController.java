@@ -9,6 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 import java.security.Principal;
 
@@ -34,10 +41,23 @@ public class OwnerRoomController {
     }
 
     @PostMapping("/add")
-    public String addRoomSubmit(@ModelAttribute Room room, Principal principal) {
+    public String addRoomSubmit(@ModelAttribute Room room, 
+                               @RequestParam("imageFile") MultipartFile imageFile,
+                               Principal principal) throws IOException {
         User owner = userRepository.findByUsername(principal.getName()).orElseThrow();
         room.setOwner(owner);
-        room.setApprovalStatus(ApprovalStatus.PENDING); // Force pending on new post
+        room.setApprovalStatus(ApprovalStatus.PENDING);
+        
+        if (!imageFile.isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+            Path uploadPath = Paths.get("uploads");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Files.copy(imageFile.getInputStream(), uploadPath.resolve(fileName));
+            room.setImageUrl("/uploads/" + fileName);
+        }
+        
         roomService.saveRoom(room);
         return "redirect:/owner/rooms";
     }
@@ -50,7 +70,10 @@ public class OwnerRoomController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editRoomSubmit(@PathVariable Long id, @ModelAttribute Room room, Principal principal) {
+    public String editRoomSubmit(@PathVariable Long id, 
+                                @ModelAttribute Room room, 
+                                @RequestParam("imageFile") MultipartFile imageFile,
+                                Principal principal) throws IOException {
         User owner = userRepository.findByUsername(principal.getName()).orElseThrow();
         Room existing = roomService.getRoomById(id).orElseThrow();
         existing.setTitle(room.getTitle());
@@ -58,14 +81,29 @@ public class OwnerRoomController {
         existing.setPrice(room.getPrice());
         existing.setArea(room.getArea());
         existing.setAddress(room.getAddress());
-        // keep old statuses and owner overriden by form
+
+        if (!imageFile.isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+            Path uploadPath = Paths.get("uploads");
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Files.copy(imageFile.getInputStream(), uploadPath.resolve(fileName));
+            existing.setImageUrl("/uploads/" + fileName);
+        }
+
         roomService.saveRoom(existing);
         return "redirect:/owner/rooms";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteRoom(@PathVariable Long id) {
-        roomService.deleteRoom(id);
+    public String deleteRoom(@PathVariable Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            roomService.deleteRoom(id);
+            redirectAttributes.addFlashAttribute("success", "Đã xóa phòng thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa phòng: " + e.getMessage());
+        }
         return "redirect:/owner/rooms";
     }
 }

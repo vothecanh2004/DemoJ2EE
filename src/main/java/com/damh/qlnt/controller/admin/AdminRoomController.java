@@ -17,8 +17,8 @@ public class AdminRoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public String listPendingRooms(Model model) {
-        model.addAttribute("rooms", roomService.getPendingRooms());
+    public String listRooms(Model model) {
+        model.addAttribute("rooms", roomService.getAllRooms());
         return "admin/rooms/list";
     }
 
@@ -29,8 +29,8 @@ public class AdminRoomController {
     }
 
     @PostMapping("/reject/{id}")
-    public String reject(@PathVariable Long id) {
-        roomService.rejectRoom(id);
+    public String reject(@PathVariable Long id, @org.springframework.web.bind.annotation.RequestParam String reason) {
+        roomService.rejectRoom(id, reason);
         return "redirect:/admin/rooms";
     }
 

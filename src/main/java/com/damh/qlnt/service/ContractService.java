@@ -13,6 +13,8 @@ public interface ContractService {
     List<Contract> getAllContracts();
     
     // Lifecycle
+    void renewContract(Long id, java.time.LocalDate newEndDate);
     void terminateContract(Long id, String reason);
     void markAsDisputed(Long id, String reason);
+    void resolveDispute(Long id, boolean terminate);
 }

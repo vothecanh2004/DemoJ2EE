@@ -14,11 +14,22 @@
         </a>
     </div>
 
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="mb-6 bg-green-50 text-green-600 p-4 rounded-xl border border-green-200 flex items-center">
+        <i class="fas fa-check-circle mr-3"></i>
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="mb-6 bg-red-50 text-red-600 p-4 rounded-xl border border-red-200 flex items-center">
+        <i class="fas fa-exclamation-circle mr-3"></i>
+        <span th:text="${error}"></span>
+    </div>
+
     <div class="glass rounded-2xl overflow-hidden shadow-sm border border-white/50">
         <table class="w-full text-left border-collapse">
             <thead>
             <tr class="bg-gray-50/50 border-b border-gray-200 text-gray-600 text-sm uppercase tracking-wider">
                 <th class="p-4 font-semibold text-center w-16">ID</th>
+                <th class="p-4 font-semibold w-24">Ảnh</th>
                 <th class="p-4 font-semibold">Tên Phòng</th>
                 <th class="p-4 font-semibold">Giá (VNĐ)</th>
                 <th class="p-4 font-semibold">Diện Tích</th>
@@ -35,6 +46,10 @@
             </tr>
             <tr th:each="room : ${rooms}" class="border-b border-gray-100 hover:bg-white/40 transition">
                 <td class="p-4 text-center text-gray-500" th:text="${room.id}">1</td>
+                <td class="p-4">
+                    <img th:src="${room.imageUrl != null ? room.imageUrl : 'https://via.placeholder.com/150'}" 
+                         class="w-12 h-12 rounded-lg object-cover shadow-sm border border-gray-100">
+                </td>
                 <td class="p-4 font-medium text-gray-800" th:text="${room.title}">Phòng Trọ Rộng Rãi</td>
                 <td class="p-4 text-green-600 font-semibold" th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">2,000,000 đ</td>
                 <td class="p-4 text-gray-600" th:text="${room.area} + ' m2'">20 m2</td>

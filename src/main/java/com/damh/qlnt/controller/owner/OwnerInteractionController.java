@@ -1,5 +1,6 @@
 package com.damh.qlnt.controller.owner;
 
+import com.damh.qlnt.entity.Comment;
 import com.damh.qlnt.entity.Post;
 import com.damh.qlnt.entity.PostType;
 import com.damh.qlnt.entity.User;
@@ -22,8 +23,12 @@ public class OwnerInteractionController {
     private final UserRepository userRepository;
 
     @GetMapping("/posts")
-    public String listPosts(Model model) {
+    public String listPosts(Model model, Principal principal) {
         model.addAttribute("posts", interactionService.getAllActivePosts());
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+            model.addAttribute("currentUser", user);
+        }
         return "owner/posts/list";
     }
 
@@ -39,4 +44,33 @@ public class OwnerInteractionController {
         interactionService.createPost(post);
         return "redirect:/owner/interactions/posts";
     }
+
+    @PostMapping("/posts/{postId}/like")
+    public String likePost(@PathVariable Long postId, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+        interactionService.toggleLike(user, postId);
+        return "redirect:/owner/interactions/posts";
+    }
+
+    @PostMapping("/posts/{postId}/comments")
+    public String addComment(@PathVariable Long postId, @RequestParam String content, 
+                             @RequestParam(required = false) Long parentId, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+        Post post = interactionService.getPostById(postId).orElseThrow();
+        
+        Comment.CommentBuilder builder = Comment.builder()
+                .user(user)
+                .post(post)
+                .content(content)
+                .createdAt(LocalDateTime.now());
+                
+        if (parentId != null) {
+            Comment parent = interactionService.getCommentById(parentId).orElseThrow();
+            builder.parent(parent);
+        }
+                
+        interactionService.addComment(builder.build());
+        return "redirect:/owner/interactions/posts";
+    }
 }
+

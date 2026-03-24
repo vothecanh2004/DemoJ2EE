@@ -23,7 +23,7 @@
                 </div>
                 <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Tổng Người Dùng</p>
                 <h3 class="text-4xl font-black text-gray-800" th:text="${totalUsers}">1,234</h3>
-                <p class="text-xs text-green-500 mt-2 font-bold"><i class="fas fa-arrow-up mr-1"></i> +5% tuần này</p>
+                <p class="text-xs text-indigo-500 mt-2 font-bold"><i class="fas fa-user-tie mr-1"></i> +<span th:text="${totalOwners}"></span> Chủ trọ (Owner)</p>
             </div>
         </div>
 
@@ -38,7 +38,7 @@
                 </div>
                 <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Tổng Số Phòng</p>
                 <h3 class="text-4xl font-black text-gray-800" th:text="${totalRooms}">567</h3>
-                <p class="text-xs text-green-500 mt-2 font-bold"><i class="fas fa-arrow-up mr-1"></i> +12 phòng mới</p>
+                <p class="text-xs text-blue-500 mt-2 font-bold"><i class="fas fa-chart-pie mr-1"></i> Tỷ lệ lấp đầy: <span th:text="${#numbers.formatDecimal(occupancyRate, 0, 1)} + '%'">75.0%</span></p>
             </div>
         </div>
 
@@ -74,34 +74,51 @@
     </div>
     
     <!-- Quick Access Map -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="glass p-8 rounded-3xl shadow-sm border border-white/50">
-            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-bolt mr-2 text-indigo-500"></i> Lối Tắt Quản Trị</h3>
+            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-exclamation-circle mr-2 text-indigo-500"></i> Mục Cần Xử Lý</h3>
             <div class="space-y-4">
-                <a th:href="@{/admin/rooms}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                <a th:href="@{/admin/rooms}" class="flex items-center justify-between p-4 bg-yellow-50/50 rounded-2xl hover:bg-yellow-100/50 transition border border-yellow-100">
                     <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-check-double"></i></div>
-                        <span class="font-bold text-gray-700">Duyệt phòng chờ xuất bản</span>
+                        <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center"><i class="fas fa-home"></i></div>
+                        <div>
+                            <span class="font-bold text-gray-700 block">Duyệt phòng mới</span>
+                            <span class="text-xs text-yellow-700 font-bold" th:text="${pendingRooms + ' phòng đang chờ'}">0 phòng đang chờ</span>
+                        </div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-400"></i>
+                    <i class="fas fa-chevron-right text-yellow-400"></i>
                 </a>
-                <a th:href="@{/admin/users}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                <a th:href="@{/admin/interactions/posts}" class="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl hover:bg-orange-100/50 transition border border-orange-100">
                     <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="fas fa-user-lock"></i></div>
-                        <span class="font-bold text-gray-700">Xử lý tài khoản vi phạm</span>
+                        <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-comment-dots"></i></div>
+                        <div>
+                            <span class="font-bold text-gray-700 block">Kiểm duyệt đánh giá</span>
+                            <span class="text-xs text-orange-700 font-bold" th:text="${pendingPosts + ' bài viết mới'}">0 bài viết mới</span>
+                        </div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-400"></i>
+                    <i class="fas fa-chevron-right text-orange-400"></i>
                 </a>
             </div>
         </div>
         
         <div class="glass p-8 rounded-3xl shadow-sm border border-white/50">
-            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-info-circle mr-2 text-indigo-500"></i> Hệ Thống Logs</h3>
-            <div class="flex items-center justify-center h-48 bg-gray-50/50 rounded-2xl border border-dashed border-gray-300">
-                <span class="text-gray-400 font-medium">Chưa có cảnh báo hệ thống (All clear)</span>
+            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-bolt mr-2 text-indigo-500"></i> Lối Tắt Nhanh</h3>
+            <div class="space-y-4">
+                <a th:href="@{/admin/users}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-users-cog"></i></div>
+                        <span class="font-bold text-gray-700">Quản lý người dùng</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </a>
+                <a th:href="@{/admin/appointments}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center"><i class="fas fa-calendar-alt"></i></div>
+                        <span class="font-bold text-gray-700">Giám sát lịch hẹn</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </a>
             </div>
         </div>
-    </div>
 
 </div>
 </body>

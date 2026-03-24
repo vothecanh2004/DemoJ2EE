@@ -8,12 +8,17 @@ public interface InteractionService {
     // Post actions
     Post createPost(Post post);
     List<Post> getAllActivePosts();
+    List<Post> getAllPosts();
     void hidePost(Long postId);
+    void unhidePost(Long postId);
+    void approvePost(Long postId);
+    void rejectPost(Long postId);
     Optional<Post> getPostById(Long id);
     
     // Comment actions
     Comment addComment(Comment comment);
     List<Comment> getCommentsByPost(Post post);
+    Optional<Comment> getCommentById(Long id);
     void deleteComment(Long commentId);
 
     // Like actions

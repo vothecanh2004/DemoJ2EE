@@ -36,4 +36,7 @@ public class User {
     private Role role;
     
     private boolean enabled;
+    
+    @Builder.Default
+    private int reputationScore = 100;
 }

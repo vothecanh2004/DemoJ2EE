@@ -1,0 +1,78 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{owner/layout}">
+<head>
+    <title>Tạo Hợp Đồng - Chủ Trọ</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-2xl mx-auto">
+    <div class="mb-6 flex items-center space-x-3">
+        <a th:href="@{/owner/contracts}" class="text-gray-400 hover:text-gray-600 transition">
+            <i class="fas fa-arrow-left text-xl"></i>
+        </a>
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Tạo Hợp Đồng Mới</h2>
+            <p class="text-gray-500">Ký hợp đồng thuê phòng với khách thuê.</p>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="mb-6 bg-red-50 text-red-600 p-4 rounded-xl border border-red-200 flex items-center">
+        <i class="fas fa-exclamation-circle mr-3"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 md:p-8">
+            <form th:action="@{/owner/contracts/create}" method="post">
+                <div class="space-y-5 border-b border-gray-100 pb-6 mb-6">
+                    <h3 class="font-bold text-gray-900 text-lg flex items-center">
+                        <i class="fas fa-user-circle text-green-500 mr-2"></i> Thông Tin Người Thuê
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tài khoản người thuê (Username) <span class="text-red-500">*</span></label>
+                        <input type="text" name="tenantUsername" required placeholder="Nhập username của hệ thống..." 
+                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition">
+                        <p class="text-xs text-gray-500 mt-1.5"><i class="fas fa-info-circle"></i> Vui lòng yêu cầu người thuê cung cấp username đăng nhập hệ thống của họ.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <h3 class="font-bold text-gray-900 text-lg flex items-center">
+                        <i class="fas fa-file-signature text-blue-500 mr-2"></i> Chi Tiết Hợp Đồng
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phòng cho thuê <span class="text-red-500">*</span></label>
+                        <select name="roomId" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition bg-white">
+                            <option value="">-- Chọn phòng --</option>
+                            <option th:each="room : ${rooms}" 
+                                    th:if="${room.status.name() == 'AVAILABLE'}" 
+                                    th:value="${room.id}" 
+                                    th:text="${room.title + ' - ' + room.address + ' (' + #numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT') + 'đ)'}">Phòng</option>
+                        </select>
+                        <div th:if="${#lists.isEmpty(rooms)}" class="text-red-500 text-xs mt-1">Bạn không có phòng trống nào!</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ngày bắt đầu thuê <span class="text-red-500">*</span></label>
+                            <input type="date" name="startDate" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ngày kết thúc <span class="text-red-500">*</span></label>
+                            <input type="date" name="endDate" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end space-x-3">
+                    <a th:href="@{/owner/contracts}" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Hủy bỏ</a>
+                    <button type="submit" class="px-6 py-2.5 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 shadow-sm transition flex items-center">
+                        <i class="fas fa-check mr-2"></i> Xác Nhận Tạo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

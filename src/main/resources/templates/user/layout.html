@@ -24,9 +24,11 @@
         
         <nav class="hidden md:flex space-x-6">
             <a th:href="@{/user/rooms}" class="font-medium text-gray-600 hover:text-blue-600 transition">Tìm Phòng</a>
-            <a th:href="@{/user/appointments}" class="font-medium text-gray-600 hover:text-blue-600 transition">Lịch Hẹn Của Tôi</a>
-            <a th:href="@{/user/rooms/favorites}" class="font-medium text-gray-600 hover:text-blue-600 transition">Đã Lưu</a>
+            <a th:href="@{/user/appointments}" class="font-medium text-gray-600 hover:text-blue-600 transition">Lịch Hẹn</a>
+            <a th:href="@{/user/rooms/favorites}" class="font-medium text-gray-600 hover:text-blue-600 transition">Yêu thích</a>
             <a th:href="@{/user/interactions/posts}" class="font-medium text-gray-600 hover:text-blue-600 transition">Cộng Đồng</a>
+            <a th:href="@{/chat}" class="font-medium text-gray-600 hover:text-blue-600 transition">Tin Nhắn</a>
+            <a th:href="@{/user/profile}" class="font-medium text-gray-600 hover:text-blue-600 transition">Cá Nhân</a>
         </nav>
         
         <div class="flex items-center space-x-4">
@@ -43,8 +45,10 @@
 </header>
 
 <!-- Main Content -->
-<main class="container mx-auto px-4 py-8" layout:fragment="content">
-    <!-- Dynamic Content Injected Here -->
+<main class="container mx-auto px-4 py-8">
+    <div layout:fragment="content">
+        <!-- Dynamic Content Injected Here -->
+    </div>
 </main>
 
 <footer class="mt-12 py-6 text-center text-gray-500 text-sm border-t border-blue-200">

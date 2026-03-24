@@ -34,12 +34,4 @@ public class OwnerDashboardController {
                 .stream().filter(c -> c.getStatus().name().equals("ACTIVE")).count());
         
         return "owner/dashboard";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model, Principal principal) {
-        User owner = userRepository.findByUsername(principal.getName()).orElseThrow();
-        model.addAttribute("user", owner);
-        return "user/profile"; // Using same profile view as user
-    }
-}
+    }}

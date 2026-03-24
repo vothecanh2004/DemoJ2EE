@@ -23,8 +23,12 @@ public class UserInteractionController {
     private final UserRepository userRepository;
 
     @GetMapping("/posts")
-    public String feed(Model model) {
+    public String feed(Model model, Principal principal) {
         model.addAttribute("posts", interactionService.getAllActivePosts());
+        if (principal != null) {
+            User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+            model.addAttribute("currentUser", user);
+        }
         return "user/posts/feed";
     }
 
@@ -49,18 +53,23 @@ public class UserInteractionController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public String addComment(@PathVariable Long postId, @RequestParam String content, Principal principal) {
+    public String addComment(@PathVariable Long postId, @RequestParam String content, 
+                             @RequestParam(required = false) Long parentId, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Post post = interactionService.getPostById(postId).orElseThrow();
         
-        Comment comment = Comment.builder()
+        Comment.CommentBuilder builder = Comment.builder()
                 .user(user)
                 .post(post)
                 .content(content)
-                .createdAt(LocalDateTime.now())
-                .build();
+                .createdAt(LocalDateTime.now());
                 
-        interactionService.addComment(comment);
+        if (parentId != null) {
+            Comment parent = interactionService.getCommentById(parentId).orElseThrow();
+            builder.parent(parent);
+        }
+                
+        interactionService.addComment(builder.build());
         return "redirect:/user/interactions/posts";
     }
 }

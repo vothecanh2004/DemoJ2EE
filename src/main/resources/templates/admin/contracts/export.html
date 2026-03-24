@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hợp Đồng Thuê Nhà - Bản In</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; padding: 40px; line-height: 1.6; color: #333; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { margin: 0; font-size: 24px; text-transform: uppercase; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-weight: bold; text-decoration: underline; margin-bottom: 10px; display: block; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .footer { margin-top: 60px; display: flex; justify-content: space-between; }
+        .signature { text-align: center; width: 200px; }
+        .no-print { margin-bottom: 20px; text-align: right; }
+        @media print { .no-print { display: none; } body { padding: 0; } }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #4f46e5; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            <i class="fas fa-print"></i> In Hợp Đồng
+        </button>
+        <button onclick="window.history.back()" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;"> Quay Lại </button>
+    </div>
+
+    <div class="header">
+        <h1>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h1>
+        <p>Độc lập - Tự do - Hạnh phúc</p>
+        <hr/>
+        <h1>HỢP ĐỒNG THUÊ PHÒNG TRỌ</h1>
+        <p th:text="'Số: ' + ${contract.id} + '/HĐTP-' + ${#temporals.format(#temporals.createNow(), 'yyyy')}">Số: 1/HĐTP-2024</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">BÊN CHO THUÊ (BÊN A):</span>
+        <p th:text="'Ông/Bà: ' + ${contract.owner.fullName}">Họ tên chủ nhà</p>
+        <p th:text="'Số điện thoại: ' + ${contract.owner.phone}">SĐT</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">BÊN THUÊ (BÊN B):</span>
+        <p th:text="'Ông/Bà: ' + ${contract.tenant.fullName}">Họ tên người thuê</p>
+        <p th:text="'Số điện thoại: ' + ${contract.tenant.phone}">SĐT</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">NỘI DUNG THỎA THUẬN:</span>
+        <p th:text="'Bên A đồng ý cho bên B thuê phòng thuộc hệ thống QLNT tại địa chỉ: ' + ${contract.room.address}">Địa chỉ</p>
+        <p th:text="'Tên phòng: ' + ${contract.room.title}"></p>
+        <div class="grid">
+            <p th:text="'Ngày bắt đầu: ' + ${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></p>
+            <p th:text="'Ngày kết thúc: ' + ${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></p>
+        </div>
+        <p th:text="'Giá thuê thỏa thuận: ' + ${#numbers.formatDecimal(contract.room.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ/tháng'"></p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">ĐIỀU KHOẢN PHÁP LÝ (BỘ LỌC ADMIN):</span>
+        <p>1. Hợp đồng này được giám sát bởi hệ thống QLNT để đảm bảo quyền lợi hai bên.</p>
+        <p>2. Mọi tranh chấp phát sinh sẽ được Admin hệ thống xem xét và đưa ra phán quyết cuối cùng dựa trên các bằng chứng được lưu trữ.</p>
+        <p th:if="${contract.disputeNote != null}" style="color: red; font-weight: bold;">
+            GHI CHÚ TRANH CHẤP/XỬ LÝ: <span th:text="${contract.disputeNote}"></span>
+        </p>
+    </div>
+
+    <div class="footer">
+        <div class="signature">
+            <p><strong>BÊN THUÊ (BÊN B)</strong></p>
+            <p>(Ký và ghi rõ họ tên)</p>
+        </div>
+        <div class="signature">
+            <p><strong>BÊN CHO THUÊ (BÊN A)</strong></p>
+            <p>(Ký và ghi rõ họ tên)</p>
+        </div>
+    </div>
+</body>
+</html>

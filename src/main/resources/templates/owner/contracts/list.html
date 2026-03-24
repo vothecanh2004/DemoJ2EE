@@ -1,60 +1,150 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{owner/layout :: html}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{owner/layout}">
 <head>
-    <title>Quản lý Hợp Đồng</title>
+    <title>Quản Lý Hợp Đồng - Chủ Trọ</title>
 </head>
 <body>
-<div th:fragment="content">
+<div layout:fragment="content">
     <div class="mb-6 flex justify-between items-center">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Quản Lý Hợp Đồng</h2>
-            <p class="text-gray-500">Theo dõi trạng thái hợp đồng thuê phòng của bạn.</p>
+            <h2 class="text-2xl font-bold text-gray-800">Danh Sách Hợp Đồng</h2>
+            <p class="text-gray-500">Quản lý các hợp đồng thuê phòng của bạn.</p>
         </div>
+        <a th:href="@{/owner/contracts/create}" class="px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition shadow-sm flex items-center">
+            <i class="fas fa-plus mr-2"></i> Tạo Hợp Đồng Mới
+        </a>
     </div>
 
-    <div class="glass rounded-2xl overflow-hidden shadow-sm border border-white/50">
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="mb-6 bg-green-50 text-green-600 p-4 rounded-xl border border-green-200 flex items-center">
+        <i class="fas fa-check-circle mr-3"></i>
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="mb-6 bg-red-50 text-red-600 p-4 rounded-xl border border-red-200 flex items-center">
+        <i class="fas fa-exclamation-circle mr-3"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Contracts Table -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead>
-            <tr class="bg-gray-50/50 border-b border-gray-200 text-gray-600 text-sm uppercase tracking-wider">
-                <th class="p-4 font-semibold text-center w-16">ID</th>
-                <th class="p-4 font-semibold">Người Thuê</th>
-                <th class="p-4 font-semibold">Phòng</th>
-                <th class="p-4 font-semibold">Ngày Bắt Đầu</th>
-                <th class="p-4 font-semibold">Ngày Kết Thúc</th>
-                <th class="p-4 font-semibold">Trạng Thái</th>
-                <th class="p-4 font-semibold text-center">Hành Động</th>
-            </tr>
+                <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 text-sm">
+                    <th class="p-4 font-semibold">Phòng</th>
+                    <th class="p-4 font-semibold">Người Thuê</th>
+                    <th class="p-4 font-semibold">Thời Gian</th>
+                    <th class="p-4 font-semibold">Trạng Thái</th>
+                    <th class="p-4 font-semibold text-right">Thao Tác</th>
+                </tr>
             </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(contracts)}">
-                <td colspan="7" class="p-8 text-center text-gray-500">
-                    Bạn chưa có hợp đồng nào.
-                </td>
-            </tr>
-            <tr th:each="contract : ${contracts}" class="border-b border-gray-100 hover:bg-white/40 transition">
-                <td class="p-4 text-center text-gray-500" th:text="${contract.id}">1</td>
-                <td class="p-4 font-medium text-gray-800" th:text="${contract.tenant.username}">Nguyen Van A</td>
-                <td class="p-4 text-gray-600" th:text="${contract.room.title}">Phòng Trọ 1</td>
-                <td class="p-4 text-gray-600" th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}">01/01/2024</td>
-                <td class="p-4 text-gray-600" th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}">31/12/2024</td>
-                <td class="p-4">
-                    <span th:if="${contract.status.name() == 'ACTIVE'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Đang Thuê</span>
-                    <span th:if="${contract.status.name() == 'EXPIRED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Hết Hạn</span>
-                    <span th:if="${contract.status.name() == 'TERMINATED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">Đã Hủy</span>
-                    <span th:if="${contract.status.name() == 'DISPUTED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Tranh Chấp</span>
-                </td>
-                <td class="p-4 text-center">
-                    <div class="flex justify-center space-x-2" th:if="${contract.status.name() == 'ACTIVE'}">
-                        <form th:action="@{/owner/contracts/terminate/{id}(id=${contract.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn kết thúc hợp đồng này?');">
-                            <input type="hidden" name="reason" value="Chủ trọ chủ động kết thúc">
-                            <button type="submit" class="px-3 py-1.5 bg-red-50 text-red-600 text-sm rounded-lg shadow border border-red-200 hover:bg-red-100 transition">Kết Thúc</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
+            <tbody class="divide-y divide-gray-100">
+                <tr th:if="${#lists.isEmpty(contracts)}">
+                    <td colspan="5" class="p-8 text-center text-gray-500">
+                        <i class="fas fa-file-signature text-4xl mb-3 text-gray-300"></i>
+                        <p>Chưa có hợp đồng nào.</p>
+                    </td>
+                </tr>
+                <tr th:each="contract : ${contracts}" class="hover:bg-gray-50 transition">
+                    <td class="p-4">
+                        <div class="font-bold text-gray-900" th:text="${contract.room.title}">Phòng</div>
+                        <div class="text-xs text-gray-500" th:text="${contract.room.address}">Địa chỉ</div>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xs" th:text="${#strings.substring(contract.tenant.username, 0, 1).toUpperCase()}">T</div>
+                            <span class="font-medium text-gray-800" th:text="${contract.tenant.username}">User</span>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-sm">
+                            Bắt đầu: <span class="font-medium" th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></span>
+                        </div>
+                        <div class="text-sm">
+                            Kết thúc: <span class="font-medium" th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></span>
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <span th:if="${contract.status.name() == 'ACTIVE'}" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold border border-green-200">Hiệu Lực</span>
+                        <span th:if="${contract.status.name() == 'EXPIRED'}" class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold border border-yellow-200">Hết Hạn</span>
+                        <span th:if="${contract.status.name() == 'TERMINATED'}" class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold border border-red-200">Đã Hủy</span>
+                    </td>
+                    <td class="p-4 text-right space-x-2">
+                        <button th:if="${contract.status.name() == 'ACTIVE'}" th:onclick="'openRenewModal(' + ${contract.id} + ')'" class="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                            Gia Hạn
+                        </button>
+                        <button th:if="${contract.status.name() == 'ACTIVE'}" th:onclick="'openTerminateModal(' + ${contract.id} + ')'" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition">
+                            Kết Thúc
+                        </button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
+
+    <!-- Renew Modal -->
+    <div id="renewModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 overflow-hidden shadow-xl transform transition-all">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold text-gray-900">Gia Hạn Hợp Đồng</h3>
+                <button onclick="closeModal('renewModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="renewForm" method="post" action="">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ngày kết thúc mới</label>
+                    <input type="date" name="newEndDate" required class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" onclick="closeModal('renewModal')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">Hủy</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">Xác Nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Terminate Modal -->
+    <div id="terminateModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 overflow-hidden shadow-xl transform transition-all">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold text-red-600">Kết Thúc Hợp Đồng Sớm</h3>
+                <button onclick="closeModal('terminateModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="terminateForm" method="post" action="">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Lý do báo cáo / kết thúc</label>
+                    <textarea name="reason" rows="3" required placeholder="Nhập lý do kết thúc hợp đồng..." class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition resize-none"></textarea>
+                </div>
+                <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-6 flex items-start">
+                    <i class="fas fa-info-circle mt-0.5 mr-2"></i>
+                    <span>Hành động này sẽ hủy bỏ hợp đồng ngay lập tức. Hãy chắc chắn trước khi thực hiện.</span>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('terminateModal')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">Hủy</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition">Xác Nhận Kết Thúc</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script layout:fragment="script">
+    function openRenewModal(contractId) {
+        document.getElementById('renewForm').action = '/owner/contracts/renew/' + contractId;
+        const modal = document.getElementById('renewModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function openTerminateModal(contractId) {
+        document.getElementById('terminateForm').action = '/owner/contracts/terminate/' + contractId;
+        const modal = document.getElementById('terminateModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>
 </body>
 </html>

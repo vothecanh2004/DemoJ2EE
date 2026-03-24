@@ -19,7 +19,7 @@
             <p>Hệ thống sạch. Không có bài viết nào cần kiểm duyệt.</p>
         </div>
 
-        <div th:each="post : ${posts}" class="glass rounded-3xl p-6 shadow-sm hover:shadow-lg transition duration-300 border border-white/50 relative flex flex-col">
+        <div th:each="post : ${posts}" th:classappend="${post.status.name() == 'HIDDEN' ? 'opacity-70 bg-gray-100 grayscale hover:grayscale-0' : 'bg-white'}" class="glass rounded-3xl p-6 shadow-sm hover:shadow-lg transition duration-300 border border-black/5 relative flex flex-col">
             
             <div class="flex items-center space-x-3 mb-4 border-b border-indigo-50 pb-4">
                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shadow-inner">
@@ -31,9 +31,14 @@
                 </div>
                 
                 <div class="ml-auto">
-                    <span th:if="${post.type.name() == 'FIND_ROOM'}" class="px-2 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase rounded border border-yellow-200 tracking-wider">Tìm Phòng</span>
-                    <span th:if="${post.type.name() == 'REVIEW'}" class="px-2 py-1 bg-purple-100 text-purple-700 text-[10px] font-bold uppercase rounded border border-purple-200 tracking-wider">Review</span>
-                    <span th:if="${post.type.name() == 'GENERAL'}" class="px-2 py-1 bg-gray-100 text-gray-700 text-[10px] font-bold uppercase rounded border border-gray-200 tracking-wider">Thảo Luận</span>
+                <div class="ml-auto flex flex-col items-end gap-1">
+                    <span th:if="${post.status.name() == 'PENDING'}" class="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase rounded border border-amber-200 tracking-wider animate-pulse"><i class="fas fa-clock mr-1"></i> Đang Chờ Duyệt</span>
+                    <span th:if="${post.status.name() == 'HIDDEN'}" class="px-2 py-1 bg-gray-200 text-gray-700 text-[10px] font-bold uppercase rounded border border-gray-300 tracking-wider"><i class="fas fa-eye-slash mr-1"></i> Bị Ẩn</span>
+                    <span th:if="${post.status.name() == 'ACTIVE'}" class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase rounded border border-emerald-200 tracking-wider">Đang Hiện</span>
+                    
+                    <span th:if="${post.type.name() == 'FIND_ROOM'}" class="px-2 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase rounded border border-yellow-200 tracking-wider mt-1">Tìm Phòng</span>
+                    <span th:if="${post.type.name() == 'REVIEW'}" class="px-2 py-1 bg-purple-100 text-purple-700 text-[10px] font-bold uppercase rounded border border-purple-200 tracking-wider mt-1">Review</span>
+                </div>
                 </div>
             </div>
             
@@ -41,10 +46,30 @@
                 <p class="text-gray-700 whitespace-pre-wrap leading-relaxed" th:text="${post.content}">Nội dung bài viết...</p>
             </div>
             
-            <div class="mt-auto pt-4 border-t border-indigo-100 flex justify-end">
-                <form th:action="@{/admin/interactions/posts/{id}/hide(id=${post.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn ẩn bài viết này khỏi cộng đồng?');">
+            <div class="mt-auto pt-4 border-t border-indigo-100 flex justify-end gap-2">
+                <!-- Actions for PENDING posts -->
+                <form th:if="${post.status.name() == 'PENDING'}" th:action="@{/admin/interactions/posts/{id}/approve(id=${post.id})}" method="post" class="inline">
+                    <button type="submit" class="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl hover:bg-emerald-600 transition flex items-center shadow-md">
+                        <i class="fas fa-check mr-2"></i> Duyệt Bài
+                    </button>
+                </form>
+                <form th:if="${post.status.name() == 'PENDING'}" th:action="@{/admin/interactions/posts/{id}/reject(id=${post.id})}" method="post" class="inline" onsubmit="return confirm('Từ chối bài viết này?');">
+                    <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 font-bold rounded-xl hover:bg-red-200 transition flex items-center shadow-sm">
+                        <i class="fas fa-times mr-2"></i> Từ Chối
+                    </button>
+                </form>
+
+                <!-- Actions for ACTIVE posts -->
+                <form th:if="${post.status.name() == 'ACTIVE'}" th:action="@{/admin/interactions/posts/{id}/hide(id=${post.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn ẩn bài viết này khỏi cộng đồng?');">
                     <button type="submit" class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 border border-red-200 transition flex items-center shadow-sm">
                         <i class="fas fa-eye-slash mr-2"></i> Ẩn Bài Viết
+                    </button>
+                </form>
+                
+                <!-- Actions for HIDDEN posts -->
+                <form th:if="${post.status.name() == 'HIDDEN'}" th:action="@{/admin/interactions/posts/{id}/unhide(id=${post.id})}" method="post">
+                    <button type="submit" class="px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl hover:bg-indigo-100 border border-indigo-200 transition flex items-center shadow-sm">
+                        <i class="fas fa-eye mr-2"></i> Mở Lại
                     </button>
                 </form>
             </div>

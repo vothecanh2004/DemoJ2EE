@@ -12,4 +12,5 @@ public interface FavoriteRoomRepository extends JpaRepository<FavoriteRoom, Long
     List<FavoriteRoom> findByUser(User user);
     boolean existsByUserAndRoom(User user, Room room);
     void deleteByUserAndRoom(User user, Room room);
+    List<FavoriteRoom> findByRoom(Room room);
 }

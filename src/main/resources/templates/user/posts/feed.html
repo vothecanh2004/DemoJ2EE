@@ -1,6 +1,31 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
 <head>
     <title>Cộng Đồng - Bài Đăng</title>
+    <style>
+        .comment-thread-container { position: relative; }
+        .comment-thread-container:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 1.1rem;
+            top: 2rem;
+            bottom: -1rem;
+            width: 2px;
+            background: #f3f4f6;
+            z-index: 0;
+        }
+        .reply-item { position: relative; }
+        .reply-item::before {
+            content: '';
+            position: absolute;
+            left: -1.6rem;
+            top: -1rem;
+            bottom: 50%;
+            width: 1.4rem;
+            border-left: 2px solid #f3f4f6;
+            border-bottom: 2px solid #f3f4f6;
+            border-bottom-left-radius: 12px;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="max-w-3xl mx-auto">
@@ -42,7 +67,7 @@
         <div th:each="post : ${posts}" class="glass p-6 rounded-2xl shadow-sm border border-white/50 transition hover:shadow-md bg-white/70">
             <div class="flex items-center space-x-4 mb-5">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
-                    <i class="fas fa-user"></i>
+                    <span th:text="${#strings.substring(post.author.username, 0, 1).toUpperCase()}">U</span>
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-900" th:text="${post.author.username}">Tên Người Dùng</h4>
@@ -59,18 +84,113 @@
             
             <p class="text-gray-800 mb-5 whitespace-pre-wrap leading-relaxed" th:text="${post.content}">Nội dung bài viết...</p>
             
-            <div class="flex items-center space-x-6 border-t border-gray-200 pt-4 text-sm font-medium text-gray-500">
+            <div class="flex items-center space-x-6 border-t border-gray-100 pt-4 text-sm font-medium text-gray-500 mb-4">
                 <form th:action="@{/user/interactions/posts/{id}/like(id=${post.id})}" method="post">
-                    <button type="submit" class="hover:text-blue-600 transition flex items-center space-x-2 group">
-                        <i class="far fa-thumbs-up group-hover:scale-110 transition-transform"></i> <span>Thích</span>
+                    <button type="submit" class="transition flex items-center space-x-2 group hover:text-blue-600">
+                        <i class="far fa-thumbs-up group-hover:scale-110"></i> 
+                        <span th:text="${#lists.size(post.likes)}">0</span> <span>Thích</span>
                     </button>
                 </form>
                 <div class="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition group">
-                    <i class="far fa-comment group-hover:scale-110 transition-transform"></i> <span>Bình luận</span>
+                    <i class="far fa-comment group-hover:scale-110 transition-transform"></i> 
+                    <span th:text="${#lists.size(post.comments)}">0</span> <span>Bình luận</span>
                 </div>
             </div>
+
+            <!-- Comments List -->
+            <div class="space-y-4 mb-4 bg-gray-50/50 p-4 rounded-xl" th:if="${!#lists.isEmpty(post.comments)}">
+                <div th:each="comment : ${post.comments}" th:if="${comment.parent == null}" class="space-y-3 comment-thread-container">
+                    <!-- Main Comment -->
+                    <div class="flex space-x-3 text-sm z-10 relative">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 font-bold shrink-0">
+                            <span th:text="${#strings.substring(comment.user.username, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-bold text-gray-900" th:text="${comment.user.username}">User</span>
+                                    <span class="text-[10px] text-gray-400" th:text="${#temporals.format(comment.createdAt, 'HH:mm dd/MM')}">Time</span>
+                                </div>
+                                <p class="text-gray-700" th:text="${comment.content}">Nội dung...</p>
+                            </div>
+                            <!-- Reply/Like Actions for Comment -->
+                            <div class="flex items-center space-x-4 mt-1 ml-2 text-[11px] font-bold text-gray-500">
+                                <button class="hover:underline">Thích</button>
+                                <button th:onclick="'toggleReplyForm(' + ${comment.id} + ')'" class="hover:underline">Trả lời</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Replies (Level 2) -->
+                    <div th:each="reply : ${comment.replies}" class="flex space-x-3 text-sm ml-11 mt-2 reply-item">
+                        <div class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold shrink-0">
+                            <span th:text="${#strings.substring(reply.user.username, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-gray-100/80 p-2.5 rounded-2xl border border-gray-100">
+                                <div class="flex justify-between items-center mb-0.5">
+                                    <span class="font-bold text-gray-800 text-xs" th:text="${reply.user.username}">User</span>
+                                    <span class="text-[9px] text-gray-400" th:text="${#temporals.format(reply.createdAt, 'HH:mm dd/MM')}">Time</span>
+                                </div>
+                                <p class="text-gray-600 text-xs">
+                                    <span class="font-bold text-blue-600 mr-1" th:text="${comment.user.username}">@user</span>
+                                    <span th:text="${reply.content}">Nội dung...</span>
+                                </p>
+                            </div>
+                            <!-- Actions for Level 2 -->
+                            <div class="flex items-center space-x-3 mt-0.5 ml-2 text-[10px] font-bold text-gray-400">
+                                <button class="hover:underline">Thích</button>
+                                <button th:onclick="'toggleReplyForm(' + ${comment.id} + ')'" class="hover:underline">Trả lời</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reply Input (Initially Hidden) -->
+                    <div th:id="'reply-container-' + ${comment.id}" class="ml-11 mt-2 hidden">
+                        <form th:action="@{/user/interactions/posts/{id}/comments(id=${post.id})}" method="post" class="flex items-start space-x-2">
+                            <input type="hidden" name="parentId" th:value="${comment.id}">
+                            <div class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">
+                                <span th:if="${currentUser != null}" th:text="${#strings.substring(currentUser.username, 0, 1).toUpperCase()}">U</span>
+                                <i th:unless="${currentUser != null}" class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="relative flex-1">
+                                <input type="text" name="content" required th:placeholder="'Trả lời ' + ${comment.user.username} + '...'" 
+                                       class="w-full pl-3 pr-10 py-1.5 rounded-2xl border border-gray-200 bg-gray-50 focus:ring-1 focus:ring-blue-500 outline-none text-xs transition-all">
+                                <button type="submit" class="absolute right-1 top-1 text-blue-600 p-1 hover:bg-blue-50 rounded-full transition">
+                                    <i class="fas fa-paper-plane fa-xs"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Comment Input -->
+            <form th:action="@{/user/interactions/posts/{id}/comments(id=${post.id})}" method="post" class="flex items-center space-x-3 py-2">
+                <div class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0">
+                    <span th:if="${currentUser != null}" th:text="${#strings.substring(currentUser.username, 0, 1).toUpperCase()}">U</span>
+                </div>
+                <div class="relative flex-1">
+                    <input type="text" name="content" required placeholder="Viết bình luận..." 
+                           class="w-full pl-4 pr-12 py-2.5 rounded-2xl border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none transition text-sm">
+                    <button type="submit" class="absolute right-2 top-1.5 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script layout:fragment="script">
+    function toggleReplyForm(commentId) {
+        const container = document.getElementById('reply-container-' + commentId);
+        // Hide all other reply forms if you want, or just toggle this one
+        container.classList.toggle('hidden');
+        if (!container.classList.contains('hidden')) {
+            container.querySelector('input[name="content"]').focus();
+        }
+    }
+</script>
 </body>
 </html>

@@ -19,6 +19,8 @@ public interface RoomService {
     // Admin features
     List<Room> getPendingRooms();
     void approveRoom(Long id);
-    void rejectRoom(Long id);
+    void rejectRoom(Long id, String reason);
     void hideRoom(Long id);
+
+    List<Room> searchRooms(String kw, Double minP, Double maxP, Double minA);
 }

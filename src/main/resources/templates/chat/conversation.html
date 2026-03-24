@@ -1,0 +1,50 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{${#authorization.expression('hasRole(''ADMIN'')') ? 'admin/layout' : (#authorization.expression('hasRole(''OWNER'')') ? 'owner/layout' : 'user/layout')}}">
+<head>
+    <title th:text="'Trò chuyện với ' + ${otherUser.username}">Trò Chuyện</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-4xl mx-auto h-[80vh] flex flex-col">
+    <div class="mb-4 flex items-center space-x-4">
+        <a th:href="@{/chat}" class="p-2 bg-white rounded-full shadow-sm hover:shadow-md transition text-gray-600">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800" th:text="${otherUser.username}">Tên Chủ Trọ</h2>
+            <div class="flex items-center text-green-500 text-xs font-medium">
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> Trực tuyến
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="flex-1 glass rounded-2xl shadow-sm border border-white/50 mb-4 p-6 overflow-y-auto bg-white/70 space-y-4" id="message-container">
+        <div th:each="msg : ${messages}" th:class="${msg.sender.id == currentUser.id ? 'flex justify-end' : 'flex justify-start'}">
+            <div th:class="${msg.sender.id == currentUser.id ? 'bg-blue-600 text-white rounded-2xl rounded-tr-none px-4 py-2 max-w-[70%] shadow-sm' : 'bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none px-4 py-2 max-w-[70%] shadow-sm'}">
+                <p class="text-sm" th:text="${msg.content}">Nội dung tin nhắn...</p>
+                <span class="text-[10px] opacity-70 mt-1 block text-right" th:text="${#temporals.format(msg.sentAt, 'HH:mm')}">12:00</span>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(messages)}" class="text-center py-20 text-gray-400">
+            <i class="far fa-paper-plane text-4xl mb-4"></i>
+            <p>Bắt đầu cuộc trò chuyện ngay!</p>
+        </div>
+    </div>
+
+    <!-- Message Input -->
+    <div class="glass p-2 rounded-2xl shadow-md border border-white/50 bg-white">
+        <form th:action="@{/chat/{id}/send(id=${otherUser.id})}" method="post" class="flex space-x-2">
+            <input type="text" name="content" required placeholder="Nhập tin nhắn..." 
+                   class="flex-1 px-6 py-3 bg-transparent outline-none text-gray-700 font-medium" autocomplete="off">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 py-3 font-bold transition duration-300 shadow-md"> Gửi </button>
+        </form>
+    </div>
+
+    <script>
+        // Auto scroll to bottom
+        const container = document.getElementById('message-container');
+        container.scrollTop = container.scrollHeight;
+    </script>
+</div>
+</body>
+</html>

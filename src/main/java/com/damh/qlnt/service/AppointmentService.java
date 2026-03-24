@@ -16,4 +16,5 @@ public interface AppointmentService {
     void approveAppointment(Long id);
     void rejectAppointment(Long id, String reason);
     void completeAppointment(Long id);
+    void cancelByAdmin(Long id);
 }

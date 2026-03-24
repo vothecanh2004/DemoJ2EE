@@ -9,6 +9,12 @@ public interface AdminService {
     
     // Statistics
     long getTotalUsers();
+    long getTotalOwners();
     long getTotalRooms();
     long getTotalActiveContracts();
+    double getOccupancyRate();
+    double getTotalRevenue();
+    
+    long getPendingRoomsCount();
+    long getPendingPostsCount();
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     List<Contract> findByTenant(User tenant);
     List<Contract> findByOwner(User owner);
+    List<Contract> findByRoom(com.damh.qlnt.entity.Room room);
 }

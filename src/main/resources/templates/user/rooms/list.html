@@ -7,14 +7,33 @@
     
     <!-- Hero Search Area -->
     <div class="glass rounded-3xl p-10 mb-12 text-center shadow-lg border border-white/50 relative overflow-hidden text-blue-900">
-        <div class="relative z-10 w-full max-w-2xl mx-auto">
+        <div class="relative z-10 w-full max-w-4xl mx-auto">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Tìm Nơi Ở Phù Hợp<br/><span class="text-blue-600">Với Ngân Sách Của Bạn</span></h1>
-            <p class="text-lg text-blue-800/70 mb-8 font-medium">Hàng ngàn phòng trọ sạch sẽ, an ninh đang chờ bạn khám phá.</p>
             
-            <div class="flex relative shadow-xl rounded-full bg-white p-2">
-                <input type="text" placeholder="Nhập địa chỉ, tên đường, quận/huyện..." class="w-full pl-6 pr-4 py-3 bg-transparent outline-none text-gray-700 placeholder-gray-400 font-medium">
-                <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-3 font-bold transition duration-300 shadow-md">Tìm Kiếm</button>
-            </div>
+            <form th:action="@{/user/rooms}" method="get" class="mt-8 space-y-4">
+                <div class="flex flex-col md:flex-row gap-2 shadow-xl rounded-2xl md:rounded-full bg-white p-2">
+                    <input type="text" name="kw" th:value="${kw}" placeholder="Nhập địa chỉ, tên đường..." 
+                           class="flex-1 pl-6 pr-4 py-3 bg-transparent outline-none text-gray-700 placeholder-gray-400 font-medium border-b md:border-b-0 md:border-r border-gray-100">
+                    
+                    <div class="flex-1 flex gap-2 px-4 py-2">
+                        <input type="number" name="minP" th:value="${minP}" placeholder="Giá từ" class="w-1/2 outline-none text-sm">
+                        <span class="text-gray-300 self-center">|</span>
+                        <input type="number" name="maxP" th:value="${maxP}" placeholder="đến" class="w-1/2 outline-none text-sm">
+                    </div>
+
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl md:rounded-full px-8 py-3 font-bold transition duration-300 shadow-md">Tìm Kiếm</button>
+                </div>
+                
+                <div class="flex justify-center flex-wrap gap-4 text-sm font-medium">
+                    <div class="flex items-center text-blue-800/60">
+                        <i class="fas fa-expand-arrows-alt mr-2"></i>
+                        <span>Diện tích từ: </span>
+                        <input type="number" name="minA" th:value="${minA}" class="ml-2 w-16 bg-white/50 rounded-lg px-2 py-1 outline-none border border-blue-100" placeholder="0">
+                        <span class="ml-1">m²</span>
+                    </div>
+                    <a th:href="@{/user/rooms}" class="text-blue-500 hover:underline">Xóa bộ lọc</a>
+                </div>
+            </form>
         </div>
         
         <!-- Decoration elements behind hero -->
@@ -47,7 +66,8 @@
         <div th:each="room : ${rooms}" class="glass rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-white/50 group flex flex-col">
             <div class="relative h-48 bg-gray-200 overflow-hidden">
                 <!-- Fallback cover if no images -->
-                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Room Cover" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <img th:src="${room.imageUrl != null ? room.imageUrl : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}" 
+                     alt="Room Cover" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-blue-600 shadow-sm">
                     <span th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT')}"></span> đ/tháng
                 </div>

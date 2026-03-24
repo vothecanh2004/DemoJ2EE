@@ -14,3 +14,10 @@ spring:
 
 server:
   port: 8080
+
+logging:
+  file:
+    name: spring-boot.log
+  level:
+    web: DEBUG
+    org.springframework.web: DEBUG

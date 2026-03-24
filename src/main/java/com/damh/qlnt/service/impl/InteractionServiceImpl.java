@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,11 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Post createPost(Post post) {
-        post.setStatus(PostStatus.ACTIVE);
+        if (post.getType() == PostType.REVIEW) {
+            post.setStatus(PostStatus.PENDING);
+        } else {
+            post.setStatus(PostStatus.ACTIVE);
+        }
         return postRepository.save(post);
     }
 
@@ -37,7 +42,36 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    @Override
     public void hidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.setStatus(PostStatus.HIDDEN);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void unhidePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.setStatus(PostStatus.ACTIVE);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void approvePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.setStatus(PostStatus.ACTIVE);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void rejectPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
         post.setStatus(PostStatus.HIDDEN);
@@ -60,6 +94,11 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
+    public Optional<Comment> getCommentById(Long id) {
+        return commentRepository.findById(id);
+    }
+
+    @Override
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
@@ -72,7 +111,7 @@ public class InteractionServiceImpl implements InteractionService {
         if (postLikeRepository.existsByUserAndPost(user, post)) {
             postLikeRepository.deleteByUserAndPost(user, post);
         } else {
-            postLikeRepository.save(PostLike.builder().user(user).post(post).build());
+            postLikeRepository.save(PostLike.builder().user(user).post(post).createdAt(LocalDateTime.now()).build());
         }
     }
 
