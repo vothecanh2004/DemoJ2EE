@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: html}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout}">
 <head>
     <title>Kiểm Duyệt Nội Dung</title>
 </head>
 <body>
-<div th:fragment="content">
+<div layout:fragment="content">
     <div class="mb-8 border-b border-indigo-100 pb-4 flex justify-between items-center">
         <div>
             <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Kiểm Duyệt Mạng Xã Hội</h2>
