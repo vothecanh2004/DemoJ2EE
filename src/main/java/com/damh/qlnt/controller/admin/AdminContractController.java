@@ -24,12 +24,12 @@ public class AdminContractController {
     }
 
     @PostMapping("/resolve/{id}")
-    public String resolveDispute(@PathVariable Long id, @RequestParam boolean terminate) {
+    public String resolveDispute(@PathVariable("id") Long id, @RequestParam("terminate") boolean terminate) {
         contractService.resolveDispute(id, terminate);
         return "redirect:/admin/contracts";
     }
     @GetMapping("/export/{id}")
-    public String exportContract(@PathVariable Long id, Model model) {
+    public String exportContract(@PathVariable("id") Long id, Model model) {
         model.addAttribute("contract", contractService.getContractById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Contract not found")));
         return "admin/contracts/export";

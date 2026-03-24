@@ -38,13 +38,13 @@ public class AdminAppointmentController {
     }
 
     @PostMapping("/cancel/{id}")
-    public String cancelAppointment(@PathVariable Long id) {
+    public String cancelAppointment(@PathVariable("id") Long id) {
         appointmentService.cancelByAdmin(id);
         return "redirect:/admin/appointments";
     }
 
     @PostMapping("/owners/{ownerId}/penalize")
-    public String penalizeOwner(@PathVariable Long ownerId, @RequestParam int penalty) {
+    public String penalizeOwner(@PathVariable("ownerId") Long ownerId, @RequestParam("penalty") int penalty) {
         userService.updateReputation(ownerId, -penalty);
         return "redirect:/admin/appointments";
     }

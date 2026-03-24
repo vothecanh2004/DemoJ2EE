@@ -23,10 +23,10 @@ public class UserRoomController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public String searchRooms(@RequestParam(required = false) String kw,
-                               @RequestParam(required = false) Double minP,
-                               @RequestParam(required = false) Double maxP,
-                               @RequestParam(required = false) Double minA,
+    public String searchRooms(@RequestParam(value = "kw", required = false) String kw,
+                               @RequestParam(value = "minP", required = false) Double minP,
+                               @RequestParam(value = "maxP", required = false) Double maxP,
+                               @RequestParam(value = "minA", required = false) Double minA,
                                Model model) {
         List<Room> rooms = roomService.searchRooms(kw, minP, maxP, minA);
         model.addAttribute("rooms", rooms);
@@ -38,7 +38,7 @@ public class UserRoomController {
     }
 
     @GetMapping("/{id}")
-    public String roomDetail(@PathVariable Long id, Model model, Principal principal) {
+    public String roomDetail(@PathVariable("id") Long id, Model model, Principal principal) {
         Room room = roomService.getRoomById(id).orElseThrow();
         model.addAttribute("room", room);
         
@@ -53,7 +53,7 @@ public class UserRoomController {
     }
 
     @PostMapping("/{id}/favorite")
-    public String toggleFavorite(@PathVariable Long id, Principal principal) {
+    public String toggleFavorite(@PathVariable("id") Long id, Principal principal) {
         if (principal == null) return "redirect:/login";
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         roomService.toggleFavorite(user, id);

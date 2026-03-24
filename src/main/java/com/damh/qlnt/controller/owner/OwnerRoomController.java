@@ -63,17 +63,17 @@ public class OwnerRoomController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editRoomForm(@PathVariable Long id, Model model) {
+    public String editRoomForm(@PathVariable("id") Long id, Model model) {
         Room room = roomService.getRoomById(id).orElseThrow();
         model.addAttribute("room", room);
         return "owner/rooms/form";
     }
 
     @PostMapping("/edit/{id}")
-    public String editRoomSubmit(@PathVariable Long id, 
-                                @ModelAttribute Room room, 
-                                @RequestParam("imageFile") MultipartFile imageFile,
-                                Principal principal) throws IOException {
+    public String editRoomSubmit(@PathVariable("id") Long id, 
+                                 @ModelAttribute Room room, 
+                                 @RequestParam("imageFile") MultipartFile imageFile,
+                                 Principal principal) throws IOException {
         User owner = userRepository.findByUsername(principal.getName()).orElseThrow();
         Room existing = roomService.getRoomById(id).orElseThrow();
         existing.setTitle(room.getTitle());
@@ -97,7 +97,7 @@ public class OwnerRoomController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteRoom(@PathVariable Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String deleteRoom(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
             roomService.deleteRoom(id);
             redirectAttributes.addFlashAttribute("success", "Đã xóa phòng thành công.");

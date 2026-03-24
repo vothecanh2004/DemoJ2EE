@@ -23,7 +23,7 @@ public class AdminUserController {
     }
 
     @PostMapping("/toggle/{id}")
-    public String toggleStatus(@PathVariable Long id) {
+    public String toggleStatus(@PathVariable("id") Long id) {
         adminService.toggleUserStatus(id);
         return "redirect:/admin/users";
     }

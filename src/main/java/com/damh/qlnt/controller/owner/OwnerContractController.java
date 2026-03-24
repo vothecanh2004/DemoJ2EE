@@ -42,12 +42,12 @@ public class OwnerContractController {
     }
 
     @PostMapping("/create")
-    public String createContract(@RequestParam String tenantUsername,
-                                 @RequestParam Long roomId,
-                                 @RequestParam String startDate,
-                                 @RequestParam String endDate,
-                                 @RequestParam(required = false) Double startElectricity,
-                                 @RequestParam(required = false) Double startWater,
+    public String createContract(@RequestParam("tenantUsername") String tenantUsername,
+                                 @RequestParam("roomId") Long roomId,
+                                 @RequestParam("startDate") String startDate,
+                                 @RequestParam("endDate") String endDate,
+                                 @RequestParam(value = "startElectricity", required = false) Double startElectricity,
+                                 @RequestParam(value = "startWater", required = false) Double startWater,
                                  Principal principal,
                                  RedirectAttributes redirectAttributes) {
         try {
@@ -84,7 +84,7 @@ public class OwnerContractController {
     }
 
     @PostMapping("/renew/{id}")
-    public String renewContract(@PathVariable Long id, @RequestParam String newEndDate, RedirectAttributes redirectAttributes) {
+    public String renewContract(@PathVariable("id") Long id, @RequestParam("newEndDate") String newEndDate, RedirectAttributes redirectAttributes) {
         try {
             contractService.renewContract(id, LocalDate.parse(newEndDate));
             redirectAttributes.addFlashAttribute("success", "Gia hạn hợp đồng thành công!");
@@ -95,7 +95,7 @@ public class OwnerContractController {
     }
 
     @PostMapping("/terminate/{id}")
-    public String terminate(@PathVariable Long id, @RequestParam String reason, RedirectAttributes redirectAttributes) {
+    public String terminate(@PathVariable("id") Long id, @RequestParam("reason") String reason, RedirectAttributes redirectAttributes) {
         try {
             contractService.terminateContract(id, reason);
             redirectAttributes.addFlashAttribute("success", "Đã kết thúc hợp đồng!");

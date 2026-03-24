@@ -23,31 +23,34 @@ public class AdminInteractionController {
     }
 
     @PostMapping("/posts/{id}/hide")
-    public String hidePost(@PathVariable Long id) {
+    public String hidePost(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Hiding Post ID: " + id);
         interactionService.hidePost(id);
         return "redirect:/admin/interactions/posts";
     }
 
     @PostMapping("/posts/{id}/unhide")
-    public String unhidePost(@PathVariable Long id) {
+    public String unhidePost(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Unhiding Post ID: " + id);
         interactionService.unhidePost(id);
         return "redirect:/admin/interactions/posts";
     }
 
     @PostMapping("/posts/{id}/approve")
-    public String approvePost(@PathVariable Long id) {
+    public String approvePost(@PathVariable("id") Long id) {
         interactionService.approvePost(id);
         return "redirect:/admin/interactions/posts";
     }
 
     @PostMapping("/posts/{id}/reject")
-    public String rejectPost(@PathVariable Long id) {
+    public String rejectPost(@PathVariable("id") Long id) {
         interactionService.rejectPost(id);
         return "redirect:/admin/interactions/posts";
     }
 
     @PostMapping("/posts/{id}/ban")
-    public String banPost(@PathVariable Long id) {
+    public String banPost(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Banning Post ID: " + id);
         interactionService.banPost(id);
         return "redirect:/admin/interactions/posts";
     }

@@ -34,10 +34,12 @@ public class Room {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private RoomStatus status = RoomStatus.AVAILABLE;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)

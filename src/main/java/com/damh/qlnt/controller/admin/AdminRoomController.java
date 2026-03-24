@@ -23,25 +23,28 @@ public class AdminRoomController {
     }
 
     @PostMapping("/approve/{id}")
-    public String approve(@PathVariable Long id) {
+    public String approve(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Approving Room ID: " + id);
         roomService.approveRoom(id);
         return "redirect:/admin/rooms";
     }
 
     @PostMapping("/reject/{id}")
-    public String reject(@PathVariable Long id, @org.springframework.web.bind.annotation.RequestParam String reason) {
+    public String reject(@PathVariable("id") Long id, @org.springframework.web.bind.annotation.RequestParam("reason") String reason) {
         roomService.rejectRoom(id, reason);
         return "redirect:/admin/rooms";
     }
 
     @PostMapping("/hide/{id}")
-    public String hide(@PathVariable Long id) {
+    public String hide(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Hiding Room ID: " + id);
         roomService.hideRoom(id);
         return "redirect:/admin/rooms";
     }
 
     @PostMapping("/ban/{id}")
-    public String ban(@PathVariable Long id) {
+    public String ban(@PathVariable("id") Long id) {
+        System.out.println(">>> Controller: Banning Room ID: " + id);
         roomService.banRoom(id);
         return "redirect:/admin/rooms";
     }

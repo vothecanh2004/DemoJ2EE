@@ -40,7 +40,7 @@ public class ChatController {
     }
 
     @GetMapping("/{otherUserId}")
-    public String conversation(@PathVariable Long otherUserId, Model model, Principal principal) {
+    public String conversation(@PathVariable("otherUserId") Long otherUserId, Model model, Principal principal) {
         User currentUser = userRepository.findByUsername(principal.getName()).orElseThrow();
         User otherUser = userRepository.findById(otherUserId).orElseThrow();
         
@@ -51,7 +51,7 @@ public class ChatController {
     }
 
     @PostMapping("/{otherUserId}/send")
-    public String sendMessage(@PathVariable Long otherUserId, @RequestParam String content, Principal principal) {
+    public String sendMessage(@PathVariable("otherUserId") Long otherUserId, @RequestParam("content") String content, Principal principal) {
         User currentUser = userRepository.findByUsername(principal.getName()).orElseThrow();
         User otherUser = userRepository.findById(otherUserId).orElseThrow();
         

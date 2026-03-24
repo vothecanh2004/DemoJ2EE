@@ -21,47 +21,83 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create Admin account if it doesn't exist
-        if (userRepository.findByUsername("admin").isEmpty()) {
-            User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("admin123"))
-                    .fullName("Quản Trị Viên")
-                    .email("admin@qlnt.com")
-                    .phone("0123456789")
-                    .role(Role.ADMIN)
-                    .enabled(true)
-                    .build();
-            userRepository.save(admin);
-            System.out.println(">>> Đã khởi tạo tài khoản Admin mặc định: admin / admin123");
-        }
+        // Create or Reset Admin account
+        userRepository.findByUsername("admin").ifPresentOrElse(
+            admin -> {
+                admin.setPassword(passwordEncoder.encode("admin123"));
+                admin.setRole(Role.ADMIN);
+                admin.setEnabled(true);
+                userRepository.save(admin);
+                System.out.println(">>> Đã cập nhật mật khẩu Admin mặc định: admin / admin123");
+            },
+            () -> {
+                User admin = User.builder()
+                        .username("admin")
+                        .password(passwordEncoder.encode("admin123"))
+                        .fullName("Quản Trị Viên")
+                        .email("admin@qlnt.com")
+                        .phone("0123456789")
+                        .role(Role.ADMIN)
+                        .enabled(true)
+                        .build();
+                userRepository.save(admin);
+                System.out.println(">>> Đã khởi tạo tài khoản Admin mặc định: admin / admin123");
+            }
+        );
         
-        // Create a Demo Owner account if it doesn't exist
-        if (userRepository.findByUsername("owner").isEmpty()) {
-            User owner = User.builder()
-                    .username("owner")
-                    .password(passwordEncoder.encode("owner123"))
-                    .fullName("Chủ Trọ Demo")
-                    .email("owner@qlnt.com")
-                    .phone("0987654321")
-                    .role(Role.OWNER)
-                    .reputationScore(95)
-                    .enabled(true)
-                    .build();
-            userRepository.save(owner);
-            System.out.println(">>> Đã khởi tạo tài khoản Owner mặc định: owner / owner123");
-            
-            // Create a Demo Tenant
-            User tenant = User.builder()
-                    .username("user")
-                    .password(passwordEncoder.encode("user123"))
-                    .fullName("Người Thuê Demo")
-                    .email("user@qlnt.com")
-                    .phone("0123999888")
-                    .role(Role.USER)
-                    .enabled(true)
-                    .build();
-            userRepository.save(tenant);
+        // Create or Reset Owner account
+        userRepository.findByUsername("owner").ifPresentOrElse(
+            owner -> {
+                owner.setPassword(passwordEncoder.encode("owner123"));
+                owner.setRole(Role.OWNER);
+                owner.setEnabled(true);
+                userRepository.save(owner);
+                System.out.println(">>> Đã cập nhật mật khẩu Owner mặc định: owner / owner123");
+            },
+            () -> {
+                User owner = User.builder()
+                        .username("owner")
+                        .password(passwordEncoder.encode("owner123"))
+                        .fullName("Chủ Trọ Demo")
+                        .email("owner@qlnt.com")
+                        .phone("0987654321")
+                        .role(Role.OWNER)
+                        .reputationScore(95)
+                        .enabled(true)
+                        .build();
+                userRepository.save(owner);
+                System.out.println(">>> Đã khởi tạo tài khoản Owner mặc định: owner / owner123");
+            }
+        );
+
+        // Create or Reset Tenant account
+        userRepository.findByUsername("user").ifPresentOrElse(
+            tenant -> {
+                tenant.setPassword(passwordEncoder.encode("user123"));
+                tenant.setRole(Role.USER);
+                tenant.setEnabled(true);
+                userRepository.save(tenant);
+                System.out.println(">>> Đã cập nhật mật khẩu User mặc định: user / user123");
+            },
+            () -> {
+                User tenant = User.builder()
+                        .username("user")
+                        .password(passwordEncoder.encode("user123"))
+                        .fullName("Người Thuê Demo")
+                        .email("user@qlnt.com")
+                        .phone("0123999888")
+                        .role(Role.USER)
+                        .enabled(true)
+                        .build();
+                userRepository.save(tenant);
+                System.out.println(">>> Đã khởi tạo tài khoản User mặc định: user / user123");
+            }
+        );
+
+        // Create Sample Data if it doesn't exist (using owner and user)
+        if (roomRepository.findAll().isEmpty()) {
+            User owner = userRepository.findByUsername("owner").orElseThrow();
+            User tenant = userRepository.findByUsername("user").orElseThrow();
 
             // Create Sample Rooms
             com.damh.qlnt.entity.Room room1 = com.damh.qlnt.entity.Room.builder()
@@ -87,6 +123,8 @@ public class DataInitializer implements CommandLineRunner {
                     .owner(owner)
                     .build();
             roomRepository.save(room2);
+
+            // Room creation loop was here, moved outside to ensure execution
 
             // Create Sample Appointment
             com.damh.qlnt.entity.Appointment apt = com.damh.qlnt.entity.Appointment.builder()
@@ -118,6 +156,29 @@ public class DataInitializer implements CommandLineRunner {
                     .createdAt(java.time.LocalDateTime.now())
                     .build();
             postRepository.save(review);
+        }
+
+        // Always ensure at least 10 rooms with "Demo" in the title exist for the owner
+        User ownerForExtra = userRepository.findByUsername("owner").orElseThrow();
+        if (roomRepository.findAll().stream().filter(r -> r.getTitle().contains("Demo")).count() < 10) {
+            String[] districts = {"Quận 3", "Quận 10", "Quận Tân Bình", "Quận Phú Nhuận", "Quận 7", "Quận 1", "Quận 3", "Quận 10", "Bình Thạnh", "Gò Vấp"};
+            for (int i = 1; i <= 10; i++) {
+                String title = "Phòng Trọ Demo " + i + " - " + districts[i-1];
+                if (roomRepository.findAll().stream().noneMatch(r -> r.getTitle().equals(title))) {
+                    com.damh.qlnt.entity.Room extraRoom = com.damh.qlnt.entity.Room.builder()
+                            .title(title)
+                            .description("Mô tả chi tiết cho phòng trọ số " + i + ". Tiện nghi cơ bản, internet tốc độ cao.")
+                            .price(new java.math.BigDecimal(2000000 + (i * i * 10000))) // Varied price
+                            .area(15.0 + i)
+                            .address("Hẻm " + (i * i) + " Đường ABC, " + districts[i-1])
+                            .status(com.damh.qlnt.entity.RoomStatus.AVAILABLE)
+                            .approvalStatus(i % 2 == 0 ? com.damh.qlnt.entity.ApprovalStatus.APPROVED : com.damh.qlnt.entity.ApprovalStatus.PENDING)
+                            .owner(ownerForExtra)
+                            .build();
+                    roomRepository.save(extraRoom);
+                }
+            }
+            System.out.println(">>> Đã tạo thêm 10 phòng trọ demo cho tài khoản owner.");
         }
     }
 }

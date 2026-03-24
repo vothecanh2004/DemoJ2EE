@@ -31,7 +31,7 @@ public class UserAppointmentController {
     }
 
     @PostMapping("/book/{roomId}")
-    public String bookAppointment(@PathVariable Long roomId, 
+    public String bookAppointment(@PathVariable("roomId") Long roomId, 
                                   @RequestParam("appointmentDate") String appointmentDateStr, 
                                   Principal principal,
                                   org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {

@@ -26,19 +26,19 @@ public class OwnerAppointmentController {
     }
 
     @PostMapping("/approve/{id}")
-    public String approve(@PathVariable Long id) {
+    public String approve(@PathVariable("id") Long id) {
         appointmentService.approveAppointment(id);
         return "redirect:/owner/appointments";
     }
 
     @PostMapping("/reject/{id}")
-    public String reject(@PathVariable Long id, @RequestParam String reason) {
+    public String reject(@PathVariable("id") Long id, @RequestParam("reason") String reason) {
         appointmentService.rejectAppointment(id, reason);
         return "redirect:/owner/appointments";
     }
 
     @PostMapping("/complete/{id}")
-    public String complete(@PathVariable Long id) {
+    public String complete(@PathVariable("id") Long id) {
         appointmentService.completeAppointment(id);
         return "redirect:/owner/appointments";
     }

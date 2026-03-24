@@ -33,7 +33,7 @@ public class OwnerInteractionController {
     }
 
     @PostMapping("/posts")
-    public String createPost(@RequestParam String content, @RequestParam PostType type, Principal principal) {
+    public String createPost(@RequestParam("content") String content, @RequestParam("type") PostType type, Principal principal) {
         User author = userRepository.findByUsername(principal.getName()).orElseThrow();
         Post post = Post.builder()
                 .author(author)
@@ -46,15 +46,15 @@ public class OwnerInteractionController {
     }
 
     @PostMapping("/posts/{postId}/like")
-    public String likePost(@PathVariable Long postId, Principal principal) {
+    public String likePost(@PathVariable("postId") Long postId, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         interactionService.toggleLike(user, postId);
         return "redirect:/owner/interactions/posts";
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public String addComment(@PathVariable Long postId, @RequestParam String content, 
-                             @RequestParam(required = false) Long parentId, Principal principal) {
+    public String addComment(@PathVariable("postId") Long postId, @RequestParam("content") String content, 
+                             @RequestParam(value = "parentId", required = false) Long parentId, Principal principal) {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Post post = interactionService.getPostById(postId).orElseThrow();
         
