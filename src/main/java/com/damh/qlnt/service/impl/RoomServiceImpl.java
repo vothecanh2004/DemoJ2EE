@@ -116,11 +116,8 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public void banRoom(Long id) {
-        System.out.println(">>> Banning Room ID: " + id);
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
-        room.setApprovalStatus(ApprovalStatus.BANNED);
-        roomRepository.save(room);
+        System.out.println(">>> Banning (Deleting) Room ID: " + id);
+        deleteRoom(id); // Use the existing delete logic to remove from DB
     }
 
     @Override

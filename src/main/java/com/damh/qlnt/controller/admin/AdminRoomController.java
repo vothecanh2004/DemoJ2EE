@@ -62,9 +62,9 @@ public class AdminRoomController {
     @PostMapping("/ban/{id}")
     public String ban(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         try {
-            System.out.println(">>> Controller: Banning Room ID: " + id);
+            System.out.println(">>> Controller: Banning (Deleting) Room ID: " + id);
             roomService.banRoom(id);
-            redirectAttributes.addFlashAttribute("success", "Đã BAN phòng thành công!");
+            redirectAttributes.addFlashAttribute("success", "Đã XÓA (BAN) phòng trọ vĩnh viễn thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
         }

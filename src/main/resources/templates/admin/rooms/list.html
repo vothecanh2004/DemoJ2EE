@@ -6,77 +6,132 @@
 <div layout:fragment="content">
     <div class="mb-8">
         <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Quản Lý Danh Sách Phòng</h2>
-        <p class="text-indigo-600/80 font-medium">Danh sách toàn bộ các phòng trên hệ thống. Duyệt phòng chờ xuất bản hoặc ẩn phòng vi phạm.</p>
-    </div>
-
-    <div class="glass rounded-3xl overflow-hidden shadow-lg border border-white/50">
+        <p class="text-indigo-600/80 font-medium">Danh sách toàn bộ các phòng trên hệ thống. Duyệt phòng chờ xuất bản hoặc �    <div class="glass rounded-3xl overflow-hidden shadow-xl border border-white/50">
         <table class="w-full text-left border-collapse">
             <thead>
-            <tr class="bg-indigo-50/50 border-b border-indigo-100 text-indigo-900 text-sm uppercase tracking-wider">
-                <th class="p-5 font-bold text-center w-16">ID</th>
-                <th class="p-5 font-bold text-center">Chủ Trọ</th>
-                <th class="p-5 font-bold">Tiêu Đề</th>
-                <th class="p-5 font-bold">Giá Thuê</th>
-                <th class="p-5 font-bold">Khu Vực</th>
+            <tr class="bg-indigo-600/90 text-white text-xs uppercase tracking-widest">
+                <th class="p-5 font-bold text-center w-20">Ảnh</th>
+                <th class="p-5 font-bold">Thông tin phòng</th>
+                <th class="p-5 font-bold">Chủ trọ</th>
+                <th class="p-5 font-bold">Giá & Khu vực</th>
                 <th class="p-5 font-bold text-center">Trạng Thái</th>
-                <th class="p-5 font-bold text-center w-56">Hành Động</th>
+                <th class="p-5 font-bold text-center w-48">Hành Động</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-indigo-100/50">
             <tr th:if="${#lists.isEmpty(rooms)}">
-                <td colspan="7" class="p-10 text-center text-gray-500 font-medium">
-                    <i class="fas fa-check-double text-4xl mb-4 text-gray-300 block"></i>
-                    Không có phòng nào trên hệ thống.
+                <td colspan="6" class="p-12 text-center text-gray-500 font-medium">
+                    <i class="fas fa-box-open text-5xl mb-4 text-gray-300 block"></i>
+                    Chưa có phòng nào được đăng tải.
                 </td>
             </tr>
-            <tr th:each="room : ${rooms}" class="border-b border-indigo-50 hover:bg-white/60 transition">
-                <td class="p-5 text-center text-gray-500 font-medium" th:text="${room.id}">1</td>
-                <td class="p-5 text-center text-indigo-700 font-bold" th:text="${room.owner.username}">Owner</td>
-                <td class="p-5 text-gray-800 font-medium" th:text="${room.title}">Mô tả phòng</td>
-                <td class="p-5 font-bold text-green-600"><span th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT')}"></span> đ</td>
-                <td class="p-5 text-gray-600 truncate max-w-xs" th:text="${room.address}">Quận 1</td>
-                
-                <td class="p-5 text-center">
-                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full shadow-sm">PENDING</span>
-                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'APPROVED'}" class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full shadow-sm">APPROVED</span>
-                    <div th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'REJECTED'}" class="flex flex-col items-center">
-                        <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full shadow-sm mb-1">REJECTED</span>
-                        <p class="text-[10px] text-red-400 italic max-w-[150px] truncate" th:title="${room.rejectionReason}" th:text="${room.rejectionReason}">Lý do...</p>
+            <tr th:each="room : ${rooms}" class="hover:bg-white/40 transition-colors group">
+                <!-- Thumbnail -->
+                <td class="p-4">
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-1 ring-indigo-100">
+                        <img th:if="${room.imageUrl}" th:src="${room.imageUrl}" class="w-full h-full object-cover" alt="Room">
+                        <div th:unless="${room.imageUrl}" class="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-300">
+                            <i class="fas fa-image text-xl"></i>
+                        </div>
                     </div>
-                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'HIDDEN'}" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-bold rounded-full shadow-sm">HIDDEN</span>
-                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'BANNED'}" class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full shadow-md border border-red-700 uppercase tracking-tight"><i class="fas fa-ban mr-1"></i> BANNED</span>
                 </td>
                 
-                <td class="p-5 text-center">
-                    <div class="flex flex-col gap-2 items-center">
-                        <div class="flex justify-center space-x-2">
+                <!-- Title & Details -->
+                <td class="p-4">
+                    <div class="flex flex-col">
+                        <span class="text-indigo-900 font-bold mb-0.5 group-hover:text-indigo-600 transition-colors" th:text="${room.title}">Tiêu đề</span>
+                        <div class="flex items-center text-[11px] text-gray-400">
+                            <i class="fas fa-hashtag mr-1"></i>
+                            <span th:text="${room.id}">1</span>
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-expand-arrows-alt mr-1"></i>
+                            <span th:text="${room.area + ' m²'}">20 m²</span>
+                        </div>
+                    </div>
+                </td>
+
+                <!-- Owner -->
+                <td class="p-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-[10px] font-bold">
+                            <span th:text="${#strings.substring(room.owner.username, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-700" th:text="${room.owner.username}">Owner</span>
+                    </div>
+                </td>
+
+                <!-- Price & Address -->
+                <td class="p-4">
+                    <div class="flex flex-col">
+                        <span class="text-emerald-600 font-black text-sm" th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">1.000.000 đ</span>
+                        <span class="text-[11px] text-gray-500 truncate max-w-[180px]" th:title="${room.address}">
+                            <i class="fas fa-map-marker-alt mr-1 text-indigo-300"></i>
+                            <span th:text="${room.address}">Địa chỉ</span>
+                        </span>
+                    </div>
+                </td>
+                
+                <!-- Status Badge -->
+                <td class="p-4 text-center">
+                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" 
+                          class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-wider border border-amber-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span> Chờ duyệt
+                    </span>
+                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'APPROVED'}" 
+                          class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-200">
+                        <i class="fas fa-check-circle mr-1.5"></i> Hiển thị
+                    </span>
+                    <div th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'REJECTED'}" class="flex flex-col items-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-wider border border-red-100">
+                            <i class="fas fa-times-circle mr-1.5"></i> Từ chối
+                        </span>
+                        <span class="text-[9px] text-red-400 mt-1 italic w-24 truncate text-center" th:title="${room.rejectionReason}" th:text="${room.rejectionReason}"></span>
+                    </div>
+                    <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'HIDDEN'}" 
+                          class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-wider border border-gray-200">
+                        <i class="fas fa-eye-slash mr-1.5"></i> Đã ẩn
+                    </span>
+                </td>
+                
+                <!-- Actions -->
+                <td class="p-4">
+                    <div class="flex flex-col gap-1.5 items-end">
+                        <div class="flex space-x-1">
+                            <!-- Approve -->
                             <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" th:action="@{/admin/rooms/approve/{id}(id=${room.id})}" method="post">
-                                <button type="submit" class="px-3 py-1.5 bg-emerald-500 text-white font-bold rounded-xl shadow-md hover:bg-emerald-600 transition text-xs">
-                                    <i class="fas fa-check mr-1"></i> Duyệt 
+                                <button type="submit" class="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg shadow-sm transition-all" title="Duyệt phòng">
+                                    <i class="fas fa-check text-xs"></i>
                                 </button>
                             </form>
+                            <!-- Hide -->
                             <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'APPROVED'}" th:action="@{/admin/rooms/hide/{id}(id=${room.id})}" method="post">
-                                <button type="submit" class="px-3 py-1.5 bg-gray-500 text-white font-bold rounded-xl shadow-md hover:bg-gray-600 transition text-xs">
-                                    <i class="fas fa-eye-slash mr-1"></i> Ẩn
+                                <button type="submit" class="p-2 bg-indigo-400 hover:bg-indigo-500 text-white rounded-lg shadow-sm transition-all" title="Ẩn phòng">
+                                    <i class="fas fa-eye-slash text-xs"></i>
+                                </button>
+                            </form>
+                            <!-- Reject (Small Input + Button) -->
+                            <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" th:action="@{/admin/rooms/reject/{id}(id=${room.id})}" method="post" class="flex items-center space-x-1">
+                                <input type="text" name="reason" placeholder="Lý do..." required class="text-[10px] px-2 py-1.5 border border-indigo-100 rounded-lg outline-none focus:ring-1 focus:ring-indigo-400 w-24">
+                                <button type="submit" class="p-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm transition-all">
+                                    <i class="fas fa-times text-xs"></i>
                                 </button>
                             </form>
                         </div>
                         
-                        <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" th:action="@{/admin/rooms/reject/{id}(id=${room.id})}" method="post" class="w-full flex gap-1">
-                            <input type="text" name="reason" placeholder="Lý do từ chối..." required
-                                   class="text-[10px] px-2 py-1 border border-orange-200 rounded-lg focus:ring-1 focus:ring-orange-500 outline-none w-32 shadow-sm">
-                            <button type="submit" class="px-2 py-1 bg-orange-500 text-white font-bold rounded-lg shadow-sm hover:bg-orange-600 transition text-[10px]">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </form>
-
-                        <!-- Ban Action (Always available for moderation unless already banned) -->
-                        <form th:if="${room.approvalStatus == null || room.approvalStatus.name() != 'BANNED'}" th:action="@{/admin/rooms/ban/{id}(id=${room.id})}" method="post" onsubmit="return confirm('CẤM phòng trọ này vĩnh viễn? Tin đăng sẽ bị gỡ bỏ ngay lập tức.');">
-                            <button type="submit" class="px-3 py-1 bg-red-600 text-white font-bold rounded-xl shadow-md hover:bg-red-700 transition text-xs whitespace-nowrap">
-                                <i class="fas fa-ban mr-1"></i> Ban Room
+                        <!-- Ban (Delete) -->
+                        <form th:action="@{/admin/rooms/ban/{id}(id=${room.id})}" method="post" onsubmit="return confirm('CẤM & XÓA VĨNH VIỄN phòng trọ này? Dữ liệu sẽ không thể khôi phục.');">
+                            <button type="submit" class="flex items-center justify-center space-x-1.5 px-3 py-1.5 bg-red-100 hover:bg-red-600 text-red-600 hover:text-white rounded-lg transition-all text-[10px] font-black uppercase tracking-tighter w-full border border-red-200">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Ban & Delete</span>
                             </button>
                         </form>
                     </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+          </div>
                 </td>
             </tr>
             </tbody>
