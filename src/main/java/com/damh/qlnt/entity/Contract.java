@@ -43,4 +43,7 @@ public class Contract {
     
     @Column(columnDefinition = "TEXT")
     private String disputeNote;
+
+    private Double startElectricity;
+    private Double startWater;
 }

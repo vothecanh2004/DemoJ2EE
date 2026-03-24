@@ -46,6 +46,8 @@ public class OwnerContractController {
                                  @RequestParam Long roomId,
                                  @RequestParam String startDate,
                                  @RequestParam String endDate,
+                                 @RequestParam(required = false) Double startElectricity,
+                                 @RequestParam(required = false) Double startWater,
                                  Principal principal,
                                  RedirectAttributes redirectAttributes) {
         try {
@@ -68,6 +70,8 @@ public class OwnerContractController {
                     .room(room)
                     .startDate(LocalDate.parse(startDate))
                     .endDate(LocalDate.parse(endDate))
+                    .startElectricity(startElectricity)
+                    .startWater(startWater)
                     .build();
 
             contractService.createContract(contract);

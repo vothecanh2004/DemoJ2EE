@@ -49,10 +49,18 @@
         <p th:text="'Bên A đồng ý cho bên B thuê phòng thuộc hệ thống QLNT tại địa chỉ: ' + ${contract.room.address}">Địa chỉ</p>
         <p th:text="'Tên phòng: ' + ${contract.room.title}"></p>
         <div class="grid">
-            <p th:text="'Ngày bắt đầu: ' + ${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></p>
-            <p th:text="'Ngày kết thúc: ' + ${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></p>
-        </div>
+        <p th:text="'Ngày bắt đầu: ' + ${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></p>
+        <p th:text="'Ngày kết thúc: ' + ${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></p>
         <p th:text="'Giá thuê thỏa thuận: ' + ${#numbers.formatDecimal(contract.room.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ/tháng'"></p>
+        
+        <div th:if="${contract.startElectricity != null || contract.startWater != null}" 
+             style="margin-top: 15px; padding: 10px; border: 1px dashed #ccc; background: #fafafa;">
+            <p style="font-weight: bold; margin-bottom: 5px;">CHỈ SỐ TIỆN ÍCH BÀN GIAO (AI SCAN):</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr;">
+                <p th:if="${contract.startElectricity != null}" th:text="'Chỉ số điện: ' + ${contract.startElectricity} + ' kWh'"></p>
+                <p th:if="${contract.startWater != null}" th:text="'Chỉ số nước: ' + ${contract.startWater} + ' m³'"></p>
+            </div>
+        </div>
     </div>
 
     <div class="section">

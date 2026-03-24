@@ -61,6 +61,14 @@
                         <div class="text-sm">
                             Kết thúc: <span class="font-medium" th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></span>
                         </div>
+                        <div th:if="${contract.startElectricity != null || contract.startWater != null}" class="mt-1 flex space-x-2">
+                            <span th:if="${contract.startElectricity != null}" class="text-[10px] bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded border border-yellow-100">
+                                <i class="fas fa-bolt mr-0.5"></i> <span th:text="${contract.startElectricity}"></span>
+                            </span>
+                            <span th:if="${contract.startWater != null}" class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">
+                                <i class="fas fa-tint mr-0.5"></i> <span th:text="${contract.startWater}"></span>
+                            </span>
+                        </div>
                     </td>
                     <td class="p-4">
                         <span th:if="${contract.status.name() == 'ACTIVE'}" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold border border-green-200">Hiệu Lực</span>
