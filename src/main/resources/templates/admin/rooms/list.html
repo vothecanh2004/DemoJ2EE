@@ -1,4 +1,4 @@
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout}">
+﻿<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout}">
 <head>
     <title>Phê Duyệt Phòng Trọ</title>
 </head>
@@ -6,7 +6,10 @@
 <div layout:fragment="content">
     <div class="mb-8">
         <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Quản Lý Danh Sách Phòng</h2>
-        <p class="text-indigo-600/80 font-medium">Danh sách toàn bộ các phòng trên hệ thống. Duyệt phòng chờ xuất bản hoặc �    <div class="glass rounded-3xl overflow-hidden shadow-xl border border-white/50">
+        <p class="text-indigo-600/80 font-medium">Danh sách toàn bộ các phòng trên hệ thống. Duyệt phòng chờ xuất bản hoặc ẩn phòng vi phạm.</p>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden shadow-xl border border-white/50">
         <table class="w-full text-left border-collapse">
             <thead>
             <tr class="bg-indigo-600/90 text-white text-xs uppercase tracking-widest">
@@ -26,7 +29,6 @@
                 </td>
             </tr>
             <tr th:each="room : ${rooms}" class="hover:bg-white/40 transition-colors group">
-                <!-- Thumbnail -->
                 <td class="p-4">
                     <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-1 ring-indigo-100">
                         <img th:if="${room.imageUrl}" th:src="${room.imageUrl}" class="w-full h-full object-cover" alt="Room">
@@ -35,8 +37,6 @@
                         </div>
                     </div>
                 </td>
-                
-                <!-- Title & Details -->
                 <td class="p-4">
                     <div class="flex flex-col">
                         <span class="text-indigo-900 font-bold mb-0.5 group-hover:text-indigo-600 transition-colors" th:text="${room.title}">Tiêu đề</span>
@@ -49,8 +49,6 @@
                         </div>
                     </div>
                 </td>
-
-                <!-- Owner -->
                 <td class="p-4">
                     <div class="flex items-center space-x-2">
                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-[10px] font-bold">
@@ -59,8 +57,6 @@
                         <span class="text-sm font-semibold text-gray-700" th:text="${room.owner.username}">Owner</span>
                     </div>
                 </td>
-
-                <!-- Price & Address -->
                 <td class="p-4">
                     <div class="flex flex-col">
                         <span class="text-emerald-600 font-black text-sm" th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">1.000.000 đ</span>
@@ -70,8 +66,6 @@
                         </span>
                     </div>
                 </td>
-                
-                <!-- Status Badge -->
                 <td class="p-4 text-center">
                     <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" 
                           class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-wider border border-amber-200">
@@ -85,40 +79,26 @@
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 text-[10px] font-black uppercase tracking-wider border border-red-100">
                             <i class="fas fa-times-circle mr-1.5"></i> Từ chối
                         </span>
-                        <span class="text-[9px] text-red-400 mt-1 italic w-24 truncate text-center" th:title="${room.rejectionReason}" th:text="${room.rejectionReason}"></span>
                     </div>
                     <span th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'HIDDEN'}" 
                           class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-wider border border-gray-200">
                         <i class="fas fa-eye-slash mr-1.5"></i> Đã ẩn
                     </span>
                 </td>
-                
-                <!-- Actions -->
                 <td class="p-4">
                     <div class="flex flex-col gap-1.5 items-end">
                         <div class="flex space-x-1">
-                            <!-- Approve -->
                             <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" th:action="@{/admin/rooms/approve/{id}(id=${room.id})}" method="post">
                                 <button type="submit" class="p-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg shadow-sm transition-all" title="Duyệt phòng">
                                     <i class="fas fa-check text-xs"></i>
                                 </button>
                             </form>
-                            <!-- Hide -->
                             <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'APPROVED'}" th:action="@{/admin/rooms/hide/{id}(id=${room.id})}" method="post">
                                 <button type="submit" class="p-2 bg-indigo-400 hover:bg-indigo-500 text-white rounded-lg shadow-sm transition-all" title="Ẩn phòng">
                                     <i class="fas fa-eye-slash text-xs"></i>
                                 </button>
                             </form>
-                            <!-- Reject (Small Input + Button) -->
-                            <form th:if="${room.approvalStatus != null && room.approvalStatus.name() == 'PENDING'}" th:action="@{/admin/rooms/reject/{id}(id=${room.id})}" method="post" class="flex items-center space-x-1">
-                                <input type="text" name="reason" placeholder="Lý do..." required class="text-[10px] px-2 py-1.5 border border-indigo-100 rounded-lg outline-none focus:ring-1 focus:ring-indigo-400 w-24">
-                                <button type="submit" class="p-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm transition-all">
-                                    <i class="fas fa-times text-xs"></i>
-                                </button>
-                            </form>
                         </div>
-                        
-                        <!-- Ban (Delete) -->
                         <form th:action="@{/admin/rooms/ban/{id}(id=${room.id})}" method="post" onsubmit="return confirm('CẤM & XÓA VĨNH VIỄN phòng trọ này? Dữ liệu sẽ không thể khôi phục.');">
                             <button type="submit" class="flex items-center justify-center space-x-1.5 px-3 py-1.5 bg-red-100 hover:bg-red-600 text-red-600 hover:text-white rounded-lg transition-all text-[10px] font-black uppercase tracking-tighter w-full border border-red-200">
                                 <i class="fas fa-trash-alt"></i>
@@ -126,12 +106,6 @@
                             </button>
                         </form>
                     </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-          </div>
                 </td>
             </tr>
             </tbody>
