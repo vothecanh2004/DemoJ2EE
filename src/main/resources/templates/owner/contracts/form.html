@@ -70,53 +70,55 @@
                         </h4>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Electricity -->
-                            <div class="relative group">
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Chỉ số Điện (kWh)</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" step="0.1" name="startElectricity" id="elecInput" placeholder="0.0" 
-                                           class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 outline-none transition">
-                                    <button type="button" onclick="document.getElementById('elecFile').click()" 
-                                            class="px-3 py-2 bg-yellow-50 text-yellow-600 rounded-xl border border-yellow-200 hover:bg-yellow-100 transition flex items-center space-x-1">
-                                        <i class="fas fa-robot"></i>
-                                        <span class="text-xs font-bold">AI Scan</span>
-                                    </button>
+                                <!-- Electricity -->
+                                <div class="relative group">
+                                    <label class="block text-xs font-bold text-gray-500 mb-1">Chỉ số Điện (kWh)</label>
+                                    <div class="flex space-x-2">
+                                        <input type="number" step="0.1" name="startElectricity" id="elecInput" placeholder="0.0" 
+                                               class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 outline-none transition">
+                                        <button type="button" onclick="document.getElementById('elecFile').click()" 
+                                                class="px-3 py-2 bg-yellow-50 text-yellow-600 rounded-xl border border-yellow-200 hover:bg-yellow-100 transition flex items-center space-x-1">
+                                            <i class="fas fa-robot"></i>
+                                            <span class="text-xs font-bold">AI Scan</span>
+                                        </button>
+                                    </div>
+                                    <input type="file" id="elecFile" class="hidden" accept="image/*" onchange="handleOcr(this, 'elecInput', 'elecSpinner', 'elecProgress', 'elecPreview')">
+                                    
+                                    <div id="elecPreview" class="hidden mt-2 p-1 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                                        <img src="" class="h-24 w-full rounded object-contain mx-auto">
+                                    </div>
+                                    <div id="elecProgress" class="hidden w-full bg-gray-100 rounded-full h-1 mt-2 overflow-hidden">
+                                        <div class="bg-yellow-500 h-full transition-all duration-300" style="width: 0%"></div>
+                                    </div>
+                                    <div id="elecSpinner" class="hidden absolute right-20 top-10">
+                                        <i class="fas fa-robot fa-bounce text-yellow-500"></i>
+                                    </div>
                                 </div>
-                                 <input type="file" id="elecFile" class="hidden" accept="image/*" onchange="handleOcr(this, 'elecInput', 'elecSpinner', 'elecProgress', 'elecPreview')">
-                                <div id="elecPreview" class="hidden mt-2 p-1 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                                    <img src="" class="h-20 w-auto rounded object-cover mx-auto">
-                                </div>
-                                <div id="elecProgress" class="hidden w-full bg-gray-100 rounded-full h-1 mt-2 overflow-hidden">
-                                    <div class="bg-yellow-500 h-full transition-all duration-300" style="width: 0%"></div>
-                                </div>
-                                <div id="elecSpinner" class="hidden absolute right-20 top-10">
-                                    <i class="fas fa-robot fa-bounce text-yellow-500"></i>
-                                </div>
-                            </div>
 
-                            <!-- Water -->
-                            <div class="relative group">
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Chỉ số Nước (m³)</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" step="0.1" name="startWater" id="waterInput" placeholder="0.0" 
-                                           class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
-                                    <button type="button" onclick="document.getElementById('waterFile').click()" 
-                                            class="px-3 py-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-200 hover:bg-blue-100 transition flex items-center space-x-1">
-                                        <i class="fas fa-robot"></i>
-                                        <span class="text-xs font-bold">AI Scan</span>
-                                    </button>
+                                <!-- Water -->
+                                <div class="relative group">
+                                    <label class="block text-xs font-bold text-gray-500 mb-1">Chỉ số Nước (m³)</label>
+                                    <div class="flex space-x-2">
+                                        <input type="number" step="0.1" name="startWater" id="waterInput" placeholder="0.0" 
+                                               class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+                                        <button type="button" onclick="document.getElementById('waterFile').click()" 
+                                                class="px-3 py-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-200 hover:bg-blue-100 transition flex items-center space-x-1">
+                                            <i class="fas fa-robot"></i>
+                                            <span class="text-xs font-bold">AI Scan</span>
+                                        </button>
+                                    </div>
+                                    <input type="file" id="waterFile" class="hidden" accept="image/*" onchange="handleOcr(this, 'waterInput', 'waterSpinner', 'waterProgress', 'waterPreview')">
+                                    
+                                    <div id="waterPreview" class="hidden mt-2 p-1 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                                        <img src="" class="h-24 w-full rounded object-contain mx-auto">
+                                    </div>
+                                    <div id="waterProgress" class="hidden w-full bg-gray-100 rounded-full h-1 mt-2 overflow-hidden">
+                                        <div class="bg-blue-500 h-full transition-all duration-300" style="width: 0%"></div>
+                                    </div>
+                                    <div id="waterSpinner" class="hidden absolute right-20 top-10">
+                                        <i class="fas fa-robot fa-bounce text-blue-500"></i>
+                                    </div>
                                 </div>
-                                 <input type="file" id="waterFile" class="hidden" accept="image/*" onchange="handleOcr(this, 'waterInput', 'waterSpinner', 'waterProgress', 'waterPreview')">
-                                <div id="waterPreview" class="hidden mt-2 p-1 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                                    <img src="" class="h-20 w-auto rounded object-cover mx-auto">
-                                </div>
-                                <div id="waterProgress" class="hidden w-full bg-gray-100 rounded-full h-1 mt-2 overflow-hidden">
-                                    <div class="bg-blue-500 h-full transition-all duration-300" style="width: 0%"></div>
-                                </div>
-                                <div id="waterSpinner" class="hidden absolute right-20 top-10">
-                                    <i class="fas fa-robot fa-bounce text-blue-500"></i>
-                                </div>
-                            </div>
                         </div>
                         <p class="text-[10px] text-gray-400 italic">Mẹo: Chụp ảnh công tơ rõ nét để AI nhận diện số chính xác hơn.</p>
                     </div>
@@ -126,66 +128,121 @@
                     <a th:href="@{/owner/contracts}" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Hủy bỏ</a>
                     <button type="submit" class="px-6 py-2.5 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 shadow-sm transition flex items-center">
                         <i class="fas fa-check mr-2"></i> Xác Nhận Tạo
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        async function handleOcr(input, targetId, spinnerId, progressId, previewId) {
+            console.log("OCR Advanced V6 (Pure Auto) Start:", targetId);
+            const file = input.files[0];
+            if (!file) return;
 
-<!-- AI OCR Logic -->
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script>
-    async function handleOcr(input, targetId, spinnerId, progressId, previewId) {
-        const file = input.files[0];
-        if (!file) return;
+            const previewDiv = document.getElementById(previewId);
+            const previewImg = previewDiv.querySelector('img');
+            const spinner = document.getElementById(spinnerId);
+            const progressDiv = document.getElementById(progressId);
+            const progressBar = progressDiv.querySelector('div');
+            const targetInput = document.getElementById(targetId);
 
-        // Show Preview
-        const previewDiv = document.getElementById(previewId);
-        const previewImg = previewDiv.querySelector('img');
-        previewImg.src = URL.createObjectURL(file);
-        previewDiv.classList.remove('hidden');
+            try {
+                previewImg.src = URL.createObjectURL(file);
+                previewDiv.classList.remove('hidden');
+                spinner.classList.remove('hidden');
+                progressDiv.classList.remove('hidden');
+                targetInput.placeholder = "AI đang xử lý...";
+                previewDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (e) { console.error(e); }
 
-        const spinner = document.getElementById(spinnerId);
-        const progressDiv = document.getElementById(progressId);
-        const progressBar = progressDiv.querySelector('div');
-        const targetInput = document.getElementById(targetId);
-        
-        spinner.classList.remove('hidden');
-        progressDiv.classList.remove('hidden');
-        targetInput.classList.add('opacity-50');
-        targetInput.placeholder = "AI đang đọc số...";
-
-        try {
-            const worker = await Tesseract.createWorker('eng', 1, {
-                logger: m => {
-                    if (m.status === 'recognizing text') {
-                        progressBar.style.width = (m.progress * 100) + '%';
+            try {
+                const worker = await Tesseract.createWorker('eng', 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text' && progressBar) {
+                            progressBar.style.width = Math.floor(m.progress * 100) + '%';
+                        }
                     }
-                }
-            });
-            const { data: { text } } = await worker.recognize(file);
-            await worker.terminate();
+                });
 
-            // AI Logic: Find numbers more intelligently (look for sequences of digits)
-            const matches = text.replace(/ /g, '').match(/\d+(\.\d+)?/);
-            if (matches) {
-                targetInput.value = matches[0];
-                targetInput.classList.add('ring-4', 'ring-green-400', 'ring-opacity-50');
-                setTimeout(() => targetInput.classList.remove('ring-4', 'ring-green-400', 'ring-opacity-50'), 3000);
-            } else {
-                alert("AI không tìm thấy số trong ảnh. Tuy nhiên, bạn có thể xem lại ảnh preview bên dưới.");
+                await worker.setParameters({
+                    tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT
+                });
+
+                const rotateAndNegate = async (img, degrees, negate) => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    if (degrees % 180 === 0) {
+                        canvas.width = img.width; canvas.height = img.height;
+                    } else {
+                        canvas.width = img.height; canvas.height = img.width;
+                    }
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(degrees * Math.PI / 180);
+                    if (negate) ctx.filter = 'invert(100%) grayscale(100%) contrast(300%) brightness(110%)';
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+                    return canvas.toDataURL('image/jpeg');
+                };
+
+                const imgObj = new Image();
+                imgObj.src = URL.createObjectURL(file);
+                await new Promise(r => imgObj.onload = r);
+
+                let candidates = [];
+                const passes = [
+                    { deg: 0, neg: false },
+                    { deg: 0, neg: true },
+                    { deg: 90, neg: false },
+                    { deg: 270, neg: false }
+                ];
+                
+                for (let p of passes) {
+                    const adjustedData = await rotateAndNegate(imgObj, p.deg, p.neg);
+                    const res = await worker.recognize(adjustedData);
+                    res.data.words.forEach(w => {
+                        const text = w.text.trim().replace(/[^0-9A-Z]/g, '');
+                        if (text.length >= 3 && text.length <= 8) {
+                            candidates.push({ text: text, conf: w.confidence, y: w.bbox.y0 });
+                        }
+                    });
+                }
+                
+                await worker.terminate();
+
+                // Advanced Scoring Matrix
+                const currentYear = new Date().getFullYear();
+                let bestMatch = null;
+                let maxScore = -1;
+
+                // Pre-filter: only pure numbers
+                const finalCandidates = candidates.filter(c => /^[0-9]+$/.test(c.text));
+
+                finalCandidates.forEach(c => {
+                    let score = c.conf;
+                    if (c.text.length === 5 || c.text.length === 6) score += 100;
+                    if (c.text.length === 4) score += 50;
+                    if (["10000", "1000", "100", "10"].includes(c.text)) score -= 150;
+                    if (parseInt(c.text) === currentYear) score -= 80;
+                    score -= (c.y / 20); // Top position priority
+
+                    if (score > maxScore) {
+                        maxScore = score;
+                        bestMatch = c.text;
+                    }
+                });
+
+                if (bestMatch) {
+                    targetInput.value = bestMatch;
+                    targetInput.classList.remove('bg-blue-50');
+                    targetInput.classList.add('ring-2', 'ring-green-400', 'bg-green-50');
+                } else {
+                    targetInput.placeholder = "AI không đọc được số";
+                }
+
+            } catch (e) {
+                console.error("OCR V6 Error:", e);
+            } finally {
+                spinner.classList.add('hidden');
+                progressDiv.classList.add('hidden');
             }
-        } catch (e) {
-            console.error(e);
-            alert("Lỗi AI OCR: " + e.message);
-        } finally {
-            spinner.classList.add('hidden');
-            progressDiv.classList.add('hidden');
-            targetInput.classList.remove('opacity-50');
-            targetInput.placeholder = "0.0";
         }
-    }
-</script>
+    </script>
+</div>
 </body>
 </html>
