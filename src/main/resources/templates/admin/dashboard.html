@@ -1,0 +1,108 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Thống Kê Hệ Thống</h2>
+        <p class="text-indigo-600/80 font-medium">Theo dõi các chỉ số quan trọng trên toàn bộ nền tảng.</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <!-- Total Users -->
+        <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+            <div class="absolute -right-6 -top-6 text-indigo-100 opacity-50 group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-users text-9xl"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 mb-4 shadow-inner">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Tổng Người Dùng</p>
+                <h3 class="text-4xl font-black text-gray-800" th:text="${totalUsers}">1,234</h3>
+                <p class="text-xs text-green-500 mt-2 font-bold"><i class="fas fa-arrow-up mr-1"></i> +5% tuần này</p>
+            </div>
+        </div>
+
+        <!-- Total Rooms -->
+        <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+            <div class="absolute -right-6 -top-6 text-blue-100 opacity-50 group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-door-open text-9xl"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 mb-4 shadow-inner">
+                    <i class="fas fa-door-open text-xl"></i>
+                </div>
+                <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Tổng Số Phòng</p>
+                <h3 class="text-4xl font-black text-gray-800" th:text="${totalRooms}">567</h3>
+                <p class="text-xs text-green-500 mt-2 font-bold"><i class="fas fa-arrow-up mr-1"></i> +12 phòng mới</p>
+            </div>
+        </div>
+
+        <!-- Active Contracts -->
+        <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+            <div class="absolute -right-6 -top-6 text-emerald-100 opacity-50 group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-file-signature text-9xl"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-4 shadow-inner">
+                    <i class="fas fa-file-signature text-xl"></i>
+                </div>
+                <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Hợp Đồng Active</p>
+                <h3 class="text-4xl font-black text-gray-800" th:text="${totalContracts}">89</h3>
+                <p class="text-xs text-gray-400 mt-2 font-bold">Trạng thái ổn định</p>
+            </div>
+        </div>
+
+        <!-- System Revenue (Est) -->
+        <div class="glass p-6 rounded-3xl shadow-lg border border-white/50 relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+            <div class="absolute -right-6 -top-6 text-amber-100 opacity-50 group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-wallet text-9xl"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 mb-4 shadow-inner">
+                    <i class="fas fa-coins text-xl"></i>
+                </div>
+                <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Dòng Tiền Ước Tính</p>
+                <h3 class="text-3xl font-black text-gray-800" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">150M</h3>
+                <p class="text-xs text-amber-500 mt-2 font-bold">Dự báo tháng này</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Access Map -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="glass p-8 rounded-3xl shadow-sm border border-white/50">
+            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-bolt mr-2 text-indigo-500"></i> Lối Tắt Quản Trị</h3>
+            <div class="space-y-4">
+                <a th:href="@{/admin/rooms}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-check-double"></i></div>
+                        <span class="font-bold text-gray-700">Duyệt phòng chờ xuất bản</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </a>
+                <a th:href="@{/admin/users}" class="flex items-center justify-between p-4 bg-white/60 rounded-2xl hover:bg-white hover:shadow-md transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="fas fa-user-lock"></i></div>
+                        <span class="font-bold text-gray-700">Xử lý tài khoản vi phạm</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="glass p-8 rounded-3xl shadow-sm border border-white/50">
+            <h3 class="text-xl font-bold text-indigo-900 mb-6 border-b border-indigo-100 pb-3"><i class="fas fa-info-circle mr-2 text-indigo-500"></i> Hệ Thống Logs</h3>
+            <div class="flex items-center justify-center h-48 bg-gray-50/50 rounded-2xl border border-dashed border-gray-300">
+                <span class="text-gray-400 font-medium">Chưa có cảnh báo hệ thống (All clear)</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

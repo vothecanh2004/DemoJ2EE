@@ -1,0 +1,63 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout}">
+<head>
+    <title>Phê Duyệt Phòng Trọ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Kiểm Duyệt Phòng Mới</h2>
+        <p class="text-indigo-600/80 font-medium">Danh sách các phòng đang chờ Admin phê duyệt trước khi hiển thị cho người dùng.</p>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden shadow-lg border border-white/50">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-indigo-50/50 border-b border-indigo-100 text-indigo-900 text-sm uppercase tracking-wider">
+                <th class="p-5 font-bold text-center w-16">ID</th>
+                <th class="p-5 font-bold text-center">Chủ Trọ</th>
+                <th class="p-5 font-bold">Tiêu Đề</th>
+                <th class="p-5 font-bold">Giá Thuê</th>
+                <th class="p-5 font-bold">Khu Vực</th>
+                <th class="p-5 font-bold text-center w-56">Quyết Định</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(rooms)}">
+                <td colspan="6" class="p-10 text-center text-gray-500 font-medium">
+                    <i class="fas fa-check-double text-4xl mb-4 text-green-300 block"></i>
+                    Tuyệt vời! Không có phòng nào đang chờ duyệt.
+                </td>
+            </tr>
+            <tr th:each="room : ${rooms}" class="border-b border-indigo-50 hover:bg-white/60 transition">
+                <td class="p-5 text-center text-gray-500 font-medium" th:text="${room.id}">1</td>
+                <td class="p-5 text-center text-indigo-700 font-bold" th:text="${room.owner.username}">Owner</td>
+                <td class="p-5 text-gray-800 font-medium" th:text="${room.title}">Mô tả phòng</td>
+                <td class="p-5 font-bold text-green-600"><span th:text="${#numbers.formatDecimal(room.price, 0, 'COMMA', 0, 'POINT')}"></span> đ</td>
+                <td class="p-5 text-gray-600 truncate max-w-xs" th:text="${room.address}">Quận 1</td>
+                
+                <td class="p-5 text-center">
+                    <div class="flex justify-center space-x-2">
+                        <form th:action="@{/admin/rooms/approve/{id}(id=${room.id})}" method="post">
+                            <button type="submit" class="px-4 py-2 bg-emerald-500 text-white font-bold rounded-xl shadow-md hover:bg-emerald-600 transition">
+                                <i class="fas fa-check mr-1"></i> Duyệt
+                            </button>
+                        </form>
+                        <form th:action="@{/admin/rooms/reject/{id}(id=${room.id})}" method="post">
+                            <button type="submit" class="px-4 py-2 bg-orange-500 text-white font-bold rounded-xl shadow-md hover:bg-orange-600 transition">
+                                <i class="fas fa-times mr-1"></i> Từ chối
+                            </button>
+                        </form>
+                        <form th:action="@{/admin/rooms/hide/{id}(id=${room.id})}" method="post">
+                            <button type="submit" class="px-4 py-2 bg-gray-500 text-white font-bold rounded-xl shadow-md hover:bg-gray-600 transition">
+                                <i class="fas fa-eye-slash mr-1"></i> Ẩn
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

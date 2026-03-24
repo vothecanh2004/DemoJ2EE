@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký | Quản lý Nhà Trọ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .animate-fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-tr from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
+
+    <div class="absolute top-20 right-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
+    <div class="absolute bottom-20 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40"></div>
+
+    <div class="w-full max-w-lg relative z-10 animate-fade-in my-8">
+        <div class="glass-panel p-8 rounded-2xl">
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/30 transform transition hover:scale-105">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Tạo tài khoản mới</h1>
+                <p class="mt-2 text-sm text-gray-500">Tham gia hệ thống để bắt đầu quản lý nhà trọ</p>
+            </div>
+
+            <!-- Global Error Alert -->
+            <div th:if="${errorMessage}" class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-sm text-red-700" th:text="${errorMessage}">Lỗi.</p>
+                </div>
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="post" class="space-y-5">
+                
+                <!-- Role Selection -->
+                <div class="pb-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Loại tài khoản</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="relative flex items-start">
+                            <input th:field="*{role}" id="role-user" value="USER" name="role" type="radio" checked class="peer sr-only">
+                            <label for="role-user" class="w-full flex items-center justify-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-600 peer-checked:bg-purple-50 hover:bg-gray-50 transition">
+                                <span class="text-sm font-medium text-gray-900">Người thuê trọ</span>
+                            </label>
+                        </div>
+                        <div class="relative flex items-start">
+                            <input th:field="*{role}" id="role-owner" value="OWNER" name="role" type="radio" class="peer sr-only">
+                            <label for="role-owner" class="w-full flex items-center justify-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-purple-600 peer-checked:bg-purple-50 hover:bg-gray-50 transition">
+                                <span class="text-sm font-medium text-gray-900">Chủ nhà trọ</span>
+                            </label>
+                        </div>
+                    </div>
+                    <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="mt-1 text-sm text-red-600"></p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Fullname -->
+                    <div>
+                        <label for="fullName" class="block text-sm font-medium text-gray-700">Họ và Tên</label>
+                        <input th:field="*{fullName}" id="fullName" type="text" class="mt-1 block w-full border-gray-300 rounded-lg py-3 px-3 text-sm focus:ring-purple-500 focus:border-purple-500 border transition bg-white/50" placeholder="Nguyễn Văn A">
+                        <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="mt-1 text-xs text-red-600"></p>
+                    </div>
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                        <input th:field="*{phone}" id="phone" type="text" class="mt-1 block w-full border-gray-300 rounded-lg py-3 px-3 text-sm focus:ring-purple-500 focus:border-purple-500 border transition bg-white/50" placeholder="0123456789">
+                        <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="mt-1 text-xs text-red-600"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Địa chỉ Email</label>
+                    <input th:field="*{email}" id="email" type="email" class="mt-1 block w-full border-gray-300 rounded-lg py-3 px-3 text-sm focus:ring-purple-500 focus:border-purple-500 border transition bg-white/50" placeholder="vidu@email.com">
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="mt-1 text-xs text-red-600"></p>
+                </div>
+
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Tên đăng nhập</label>
+                    <input th:field="*{username}" id="username" type="text" class="mt-1 block w-full border-gray-300 rounded-lg py-3 px-3 text-sm focus:ring-purple-500 focus:border-purple-500 border transition bg-white/50" placeholder="tendangnhap">
+                    <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="mt-1 text-xs text-red-600"></p>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Mật khẩu</label>
+                    <input th:field="*{password}" id="password" type="password" class="mt-1 block w-full border-gray-300 rounded-lg py-3 px-3 text-sm focus:ring-purple-500 focus:border-purple-500 border transition bg-white/50" placeholder="••••••••">
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="mt-1 text-xs text-red-600"></p>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition transform hover:-translate-y-0.5">
+                        Tạo tài khoản
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Đã có tài khoản? 
+                    <a th:href="@{/login}" class="font-medium text-purple-600 hover:text-purple-500 transition">Đăng nhập</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

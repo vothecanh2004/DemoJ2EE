@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: html}">
+<head>
+    <title>Giám Sát Lịch Hẹn</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="mb-8 border-b border-indigo-100 pb-4">
+        <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Giám Sát Lịch Hẹn Hệ Thống</h2>
+        <p class="text-indigo-600/80 font-medium">Ban quản trị có thể theo dõi tất cả các lịch hẹn để phát hiện các tranh chấp nếu có.</p>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden shadow-lg border border-white/50">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-indigo-50/50 border-b border-indigo-100 text-indigo-900 text-sm uppercase tracking-wider">
+                <th class="p-5 font-bold text-center w-16">ID</th>
+                <th class="p-5 font-bold">Người Thuê</th>
+                <th class="p-5 font-bold">Chủ Trọ</th>
+                <th class="p-5 font-bold">Phòng (ID)</th>
+                <th class="p-5 font-bold">Lịch Hẹn</th>
+                <th class="p-5 font-bold">Trạng Thái</th>
+                <th class="p-5 font-bold">Ghi chú / Dispute</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(appointments)}">
+                <td colspan="7" class="p-8 text-center text-gray-500">
+                    Chưa có lịch hẹn nào trên hệ thống.
+                </td>
+            </tr>
+            <tr th:each="apt : ${appointments}" class="border-b border-indigo-50 hover:bg-white/60 transition">
+                <td class="p-5 text-center text-gray-500 font-medium" th:text="${apt.id}">1</td>
+                <td class="p-5 text-indigo-900 font-bold" th:text="${apt.tenant.username}">User</td>
+                <td class="p-5 text-indigo-900 font-bold" th:text="${apt.owner.username}">Owner</td>
+                <td class="p-5 text-gray-600"><a th:href="@{/user/rooms/{id}(id=${apt.room.id})}" class="text-blue-500 hover:underline" th:text="${'#' + apt.room.id + ' - ' + apt.room.title}">Phòng 1</a></td>
+                <td class="p-5 text-gray-600 font-medium" th:text="${#temporals.format(apt.appointmentDate, 'dd/MM/yyyy HH:mm')}">Thời gian</td>
+                <td class="p-5">
+                    <span th:if="${apt.status.name() == 'PENDING'}" class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Đang Chờ</span>
+                    <span th:if="${apt.status.name() == 'APPROVED'}" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Đã Duyệt</span>
+                    <span th:if="${apt.status.name() == 'REJECTED'}" class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">Bị Từ Chối</span>
+                    <span th:if="${apt.status.name() == 'COMPLETED'}" class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Hoàn Thành</span>
+                </td>
+                <td class="p-5 text-xs text-red-500 font-medium" th:text="${apt.disputeNote}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

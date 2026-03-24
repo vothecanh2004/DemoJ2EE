@@ -1,0 +1,81 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{owner/layout}">
+<head>
+    <title>Owner Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Xin chào, <span class="text-green-600" th:text="${username}">Owner</span>!</h2>
+        <p class="text-gray-600">Chào mừng bạn đến với trang quản trị dành riêng cho Chủ Trọ.</p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        <!-- Card 1 -->
+        <div class="glass p-6 rounded-2xl shadow-sm border border-white/40 hover:shadow-md transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Tổng Số Phòng</p>
+                    <h3 class="text-3xl font-bold text-gray-800" th:text="${totalRooms}">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                    <i class="fas fa-door-open text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass p-6 rounded-2xl shadow-sm border border-white/40 hover:shadow-md transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Hẹn Chờ Duyệt</p>
+                    <h3 class="text-3xl font-bold text-gray-800" th:text="${pendingAppointments}">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                    <i class="fas fa-clock text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="glass p-6 rounded-2xl shadow-sm border border-white/40 hover:shadow-md transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Hợp Đồng Active</p>
+                    <h3 class="text-3xl font-bold text-gray-800" th:text="${activeContracts}">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                    <i class="fas fa-file-signature text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass p-6 rounded-2xl shadow-sm border border-white/40 hover:shadow-md transition duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">Dòng tiền dự kiến</p>
+                    <h3 class="text-3xl font-bold text-gray-800">5M+</h3>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                    <i class="fas fa-wallet text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Hành Động Nhanh</h3>
+        <div class="flex flex-wrap gap-4">
+            <a th:href="@{/owner/rooms/add}" class="px-5 py-2.5 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 shadow-md shadow-green-200 transition">
+                <i class="fas fa-plus mr-2"></i> Đăng Bài Phòng Trọ
+            </a>
+            <a th:href="@{/owner/appointments}" class="px-5 py-2.5 bg-white text-green-700 font-medium rounded-xl hover:bg-green-50 shadow-sm border border-green-200 transition">
+                <i class="fas fa-calendar-check mr-2"></i> Duyệt Lịch Hẹn
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Portal - Quản lý Trọ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen font-sans text-gray-800">
+
+<!-- Navigation Bar -->
+<header class="h-16 glass sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-4 h-full flex items-center justify-between">
+        <a th:href="@{/user/rooms}" class="text-2xl font-bold tracking-wider text-blue-700">Q.L.N.T</a>
+        
+        <nav class="hidden md:flex space-x-6">
+            <a th:href="@{/user/rooms}" class="font-medium text-gray-600 hover:text-blue-600 transition">Tìm Phòng</a>
+            <a th:href="@{/user/appointments}" class="font-medium text-gray-600 hover:text-blue-600 transition">Lịch Hẹn Của Tôi</a>
+            <a th:href="@{/user/rooms/favorites}" class="font-medium text-gray-600 hover:text-blue-600 transition">Đã Lưu</a>
+            <a th:href="@{/user/interactions/posts}" class="font-medium text-gray-600 hover:text-blue-600 transition">Cộng Đồng</a>
+        </nav>
+        
+        <div class="flex items-center space-x-4">
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit" class="px-4 py-2 bg-red-100 text-red-600 font-medium rounded-lg hover:bg-red-200 transition">Đăng Xuất</button>
+                </form>
+            </div>
+            <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/login}" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">Đăng Nhập</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="container mx-auto px-4 py-8" layout:fragment="content">
+    <!-- Dynamic Content Injected Here -->
+</main>
+
+<footer class="mt-12 py-6 text-center text-gray-500 text-sm border-t border-blue-200">
+    &copy; 2024 Quản Lý Nhà Trọ. All rights reserved.
+</footer>
+
+</body>
+</html>

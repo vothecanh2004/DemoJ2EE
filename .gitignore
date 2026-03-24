@@ -1,0 +1,39 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/resources/archetype-resources/google-services.json
+!**/src/test/resources/archetype-resources/google-services.json
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/resources/bin/
+!**/src/test/resources/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/resources/out/
+!**/src/test/resources/out/
+
+### VS Code ###
+.vscode/
+
+### Others ###
+.DS_Store
+*.log
+*.tmp
+*.bak
+*.swp
+node_modules/
+.env
+.env.local
+.env.*.local

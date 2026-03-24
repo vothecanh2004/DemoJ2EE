@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{owner/layout :: html}">
+<head>
+    <title>Quản lý Hợp Đồng</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Quản Lý Hợp Đồng</h2>
+            <p class="text-gray-500">Theo dõi trạng thái hợp đồng thuê phòng của bạn.</p>
+        </div>
+    </div>
+
+    <div class="glass rounded-2xl overflow-hidden shadow-sm border border-white/50">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gray-50/50 border-b border-gray-200 text-gray-600 text-sm uppercase tracking-wider">
+                <th class="p-4 font-semibold text-center w-16">ID</th>
+                <th class="p-4 font-semibold">Người Thuê</th>
+                <th class="p-4 font-semibold">Phòng</th>
+                <th class="p-4 font-semibold">Ngày Bắt Đầu</th>
+                <th class="p-4 font-semibold">Ngày Kết Thúc</th>
+                <th class="p-4 font-semibold">Trạng Thái</th>
+                <th class="p-4 font-semibold text-center">Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(contracts)}">
+                <td colspan="7" class="p-8 text-center text-gray-500">
+                    Bạn chưa có hợp đồng nào.
+                </td>
+            </tr>
+            <tr th:each="contract : ${contracts}" class="border-b border-gray-100 hover:bg-white/40 transition">
+                <td class="p-4 text-center text-gray-500" th:text="${contract.id}">1</td>
+                <td class="p-4 font-medium text-gray-800" th:text="${contract.tenant.username}">Nguyen Van A</td>
+                <td class="p-4 text-gray-600" th:text="${contract.room.title}">Phòng Trọ 1</td>
+                <td class="p-4 text-gray-600" th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}">01/01/2024</td>
+                <td class="p-4 text-gray-600" th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}">31/12/2024</td>
+                <td class="p-4">
+                    <span th:if="${contract.status.name() == 'ACTIVE'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">Đang Thuê</span>
+                    <span th:if="${contract.status.name() == 'EXPIRED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Hết Hạn</span>
+                    <span th:if="${contract.status.name() == 'TERMINATED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">Đã Hủy</span>
+                    <span th:if="${contract.status.name() == 'DISPUTED'}" class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Tranh Chấp</span>
+                </td>
+                <td class="p-4 text-center">
+                    <div class="flex justify-center space-x-2" th:if="${contract.status.name() == 'ACTIVE'}">
+                        <form th:action="@{/owner/contracts/terminate/{id}(id=${contract.id})}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn kết thúc hợp đồng này?');">
+                            <input type="hidden" name="reason" value="Chủ trọ chủ động kết thúc">
+                            <button type="submit" class="px-3 py-1.5 bg-red-50 text-red-600 text-sm rounded-lg shadow border border-red-200 hover:bg-red-100 transition">Kết Thúc</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

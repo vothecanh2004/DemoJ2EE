@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: html}">
+<head>
+    <title>Giám Sát Hợp Đồng</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="mb-8 border-b border-indigo-100 pb-4">
+        <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Giám Sát Hợp Đồng Hệ Thống</h2>
+        <p class="text-indigo-600/80 font-medium">Ban quản trị theo dõi tất cả hợp đồng đang hoạt động, hết hạn và giải quyết tranh chấp.</p>
+    </div>
+
+    <div class="glass rounded-3xl overflow-hidden shadow-lg border border-white/50">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-indigo-50/50 border-b border-indigo-100 text-indigo-900 text-sm uppercase tracking-wider">
+                <th class="p-5 font-bold text-center w-16">ID</th>
+                <th class="p-5 font-bold">Người Thuê</th>
+                <th class="p-5 font-bold">Chủ Trọ</th>
+                <th class="p-5 font-bold">Ngày Thuê - Ngày Hết Hạn</th>
+                <th class="p-5 font-bold">Trạng Thái</th>
+                <th class="p-5 font-bold text-center">Tệp Đính Kèm</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(contracts)}">
+                <td colspan="6" class="p-8 text-center text-gray-500">
+                    Chưa có hợp đồng nào được tạo trên hệ thống.
+                </td>
+            </tr>
+            <tr th:each="contract : ${contracts}" class="border-b border-indigo-50 hover:bg-white/60 transition">
+                <td class="p-5 text-center text-gray-500 font-medium" th:text="${contract.id}">1</td>
+                <td class="p-5 text-indigo-900 font-bold" th:text="${contract.tenant.username}">Tenant</td>
+                <td class="p-5 text-indigo-900 font-bold" th:text="${contract.owner.username}">Owner</td>
+                <td class="p-5 text-gray-600 font-medium">
+                    <span th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}"></span>
+                    <i class="fas fa-arrow-right mx-2 text-indigo-300"></i>
+                    <span th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}"></span>
+                </td>
+                <td class="p-5">
+                    <span th:if="${contract.status.name() == 'ACTIVE'}" class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Đang Thuê</span>
+                    <span th:if="${contract.status.name() == 'EXPIRED'}" class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Hết Hạn</span>
+                    <span th:if="${contract.status.name() == 'TERMINATED'}" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs font-bold rounded-full">Bị Hủy</span>
+                    <span th:if="${contract.status.name() == 'DISPUTED'}" class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full"><i class="fas fa-exclamation-triangle mr-1"></i> Tranh Chấp</span>
+                </td>
+                <td class="p-5 text-center">
+                    <a th:if="${contract.fileUrl}" th:href="${contract.fileUrl}" target="_blank" class="px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl border border-indigo-200 hover:bg-indigo-100 transition shadow-sm inline-block">
+                        <i class="fas fa-file-pdf mr-1"></i> Xem PDF
+                    </a>
+                    <span th:unless="${contract.fileUrl}" class="text-xs text-gray-400 italic">Chưa map file</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

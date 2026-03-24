@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: html}">
+<head>
+    <title>Kiểm Duyệt Nội Dung</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="mb-8 border-b border-indigo-100 pb-4 flex justify-between items-center">
+        <div>
+            <h2 class="text-3xl font-extrabold text-indigo-900 mb-2">Kiểm Duyệt Mạng Xã Hội</h2>
+            <p class="text-indigo-600/80 font-medium">Giám sát bài đăng cộng đồng và xử lý nội dung vi phạm tiêu chuẩn.</p>
+        </div>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div th:if="${#lists.isEmpty(posts)}" class="col-span-full py-12 text-center text-gray-500 font-medium glass rounded-3xl">
+            <i class="fas fa-shield-alt text-5xl mb-4 text-indigo-200"></i>
+            <p>Hệ thống sạch. Không có bài viết nào cần kiểm duyệt.</p>
+        </div>
+
+        <div th:each="post : ${posts}" class="glass rounded-3xl p-6 shadow-sm hover:shadow-lg transition duration-300 border border-white/50 relative flex flex-col">
+            
+            <div class="flex items-center space-x-3 mb-4 border-b border-indigo-50 pb-4">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shadow-inner">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-indigo-900" th:text="${post.author.username}">Tên Người Dùng</h4>
+                    <p class="text-xs text-gray-500 font-semibold" th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</p>
+                </div>
+                
+                <div class="ml-auto">
+                    <span th:if="${post.type.name() == 'FIND_ROOM'}" class="px-2 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase rounded border border-yellow-200 tracking-wider">Tìm Phòng</span>
+                    <span th:if="${post.type.name() == 'REVIEW'}" class="px-2 py-1 bg-purple-100 text-purple-700 text-[10px] font-bold uppercase rounded border border-purple-200 tracking-wider">Review</span>
+                    <span th:if="${post.type.name() == 'GENERAL'}" class="px-2 py-1 bg-gray-100 text-gray-700 text-[10px] font-bold uppercase rounded border border-gray-200 tracking-wider">Thảo Luận</span>
+                </div>
+            </div>
+            
+            <div class="flex-1 mb-6">
+                <p class="text-gray-700 whitespace-pre-wrap leading-relaxed" th:text="${post.content}">Nội dung bài viết...</p>
+            </div>
+            
+            <div class="mt-auto pt-4 border-t border-indigo-100 flex justify-end">
+                <form th:action="@{/admin/interactions/posts/{id}/hide(id=${post.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn ẩn bài viết này khỏi cộng đồng?');">
+                    <button type="submit" class="px-4 py-2 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 border border-red-200 transition flex items-center shadow-sm">
+                        <i class="fas fa-eye-slash mr-2"></i> Ẩn Bài Viết
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

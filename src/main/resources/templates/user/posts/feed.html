@@ -1,0 +1,76 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+<head>
+    <title>Cộng Đồng - Bài Đăng</title>
+</head>
+<body>
+<div layout:fragment="content" class="max-w-3xl mx-auto">
+    <div class="mb-8 text-center">
+        <h2 class="text-3xl font-extrabold text-blue-900">Cộng Đồng Tìm Trọ</h2>
+        <p class="text-blue-600/80 mt-2 font-medium">Chia sẻ thông tin, tìm bạn ở ghép, review khu vực.</p>
+    </div>
+
+    <!-- Create Post Form -->
+    <div class="glass p-6 rounded-2xl mb-10 shadow-md border border-white/50 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+        <form th:action="@{/user/interactions/posts}" method="post">
+            <div class="flex items-start space-x-4 mb-4">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold shrink-0">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="w-full">
+                    <textarea name="content" rows="3" required placeholder="Bạn muốn chia sẻ điều gì?" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 bg-white resize-none outline-none text-gray-700"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-between items-center pl-16">
+                <select name="type" class="px-4 py-2 border border-gray-200 rounded-lg outline-none bg-white text-sm text-gray-600 font-medium hover:bg-gray-50 cursor-pointer">
+                    <option value="GENERAL">Thảo luận chung</option>
+                    <option value="FIND_ROOM">Tìm phòng/Bạn cùng phòng</option>
+                    <option value="REVIEW">Review Không gian</option>
+                </select>
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm transition">Đăng Bài</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="space-y-6">
+        <div th:if="${#lists.isEmpty(posts)}" class="text-center py-12 text-gray-500">
+            <i class="fas fa-wind text-4xl mb-4 text-gray-300"></i>
+            <p>Bảng tin đang trống. Hãy trở thành người đầu tiên chia sẻ!</p>
+        </div>
+        
+        <div th:each="post : ${posts}" class="glass p-6 rounded-2xl shadow-sm border border-white/50 transition hover:shadow-md bg-white/70">
+            <div class="flex items-center space-x-4 mb-5">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-900" th:text="${post.author.username}">Tên Người Dùng</h4>
+                    <p class="text-xs text-gray-500 font-medium" th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</p>
+                </div>
+                
+                <!-- Tag Badge -->
+                <div class="ml-auto">
+                    <span th:if="${post.type.name() == 'FIND_ROOM'}" class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full border border-yellow-200 shadow-sm">Tìm Phòng</span>
+                    <span th:if="${post.type.name() == 'REVIEW'}" class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full border border-purple-200 shadow-sm">Review</span>
+                    <span th:if="${post.type.name() == 'GENERAL'}" class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full border border-gray-200 shadow-sm">Thảo Luận</span>
+                </div>
+            </div>
+            
+            <p class="text-gray-800 mb-5 whitespace-pre-wrap leading-relaxed" th:text="${post.content}">Nội dung bài viết...</p>
+            
+            <div class="flex items-center space-x-6 border-t border-gray-200 pt-4 text-sm font-medium text-gray-500">
+                <form th:action="@{/user/interactions/posts/{id}/like(id=${post.id})}" method="post">
+                    <button type="submit" class="hover:text-blue-600 transition flex items-center space-x-2 group">
+                        <i class="far fa-thumbs-up group-hover:scale-110 transition-transform"></i> <span>Thích</span>
+                    </button>
+                </form>
+                <div class="flex items-center space-x-2 cursor-pointer hover:text-blue-600 transition group">
+                    <i class="far fa-comment group-hover:scale-110 transition-transform"></i> <span>Bình luận</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

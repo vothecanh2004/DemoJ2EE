@@ -1,0 +1,57 @@
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{owner/layout}">
+<head>
+    <title>Cộng Đồng - Bài Đăng</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Bảng Tin</h2>
+            <p class="text-gray-500">Đăng bài tìm khách hoặc chia sẻ thông tin.</p>
+        </div>
+    </div>
+
+    <!-- Create Post Form -->
+    <div class="glass p-6 rounded-2xl mb-8 shadow-sm border border-white/50">
+        <form th:action="@{/owner/interactions/posts}" method="post">
+            <textarea name="content" rows="3" required placeholder="Bạn đang nghĩ gì?" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 bg-white/50 resize-none outline-none mb-3"></textarea>
+            <div class="flex justify-between items-center">
+                <select name="type" class="px-4 py-2 border border-gray-300 rounded-lg outline-none bg-white text-sm text-gray-700">
+                    <option value="GENERAL">Chia sẻ chung</option>
+                    <option value="FIND_ROOM">Tìm khách thuê</option>
+                </select>
+                <button type="submit" class="px-6 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition">Đăng Bài</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="space-y-6">
+        <div th:if="${#lists.isEmpty(posts)}" class="text-center py-8 text-gray-500">
+            Chưa có bài đăng nào.
+        </div>
+        <div th:each="post : ${posts}" class="glass p-6 rounded-2xl shadow-sm border border-white/50">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-800" th:text="${post.author.username}">Author Name</h4>
+                    <p class="text-xs text-gray-500" th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</p>
+                </div>
+                <span th:if="${post.type.name() == 'FIND_ROOM'}" class="ml-auto px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full border border-yellow-200">Tìm Người Thuê</span>
+            </div>
+            <p class="text-gray-700 mb-4 whitespace-pre-wrap" th:text="${post.content}">Nội dung bài viết...</p>
+            <div class="flex items-center space-x-6 border-t border-gray-200 pt-3 text-sm text-gray-500">
+                <button class="hover:text-green-600 transition flex items-center space-x-1">
+                    <i class="far fa-thumbs-up"></i> <span>Thích</span>
+                </button>
+                <button class="hover:text-green-600 transition flex items-center space-x-1">
+                    <i class="far fa-comment"></i> <span>Bình luận</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
