@@ -76,9 +76,20 @@
             </div>
         </header>
 
-        <!-- Page Content -->
-        <div class="flex-1 overflow-y-auto p-8 relative z-0" layout:fragment="content">
-            <!-- Dynamic Content Injected Here -->
+        <div class="flex-1 overflow-y-auto p-8 relative z-0">
+            <!-- Global Feedback Alerts -->
+            <div th:if="${success}" class="mb-6 p-4 bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center shadow-sm animate-bounce">
+                <i class="fas fa-check-circle mr-3 text-xl"></i>
+                <span class="font-bold" th:text="${success}">Thông báo thành công</span>
+            </div>
+            <div th:if="${error}" class="mb-6 p-4 bg-red-100 border border-red-200 text-red-800 rounded-2xl flex items-center shadow-sm">
+                <i class="fas fa-exclamation-circle mr-3 text-xl"></i>
+                <span class="font-bold" th:text="${error}">Thông báo lỗi</span>
+            </div>
+
+            <div layout:fragment="content">
+                <!-- Dynamic Content Injected Here -->
+            </div>
         </div>
     </main>
 </div>

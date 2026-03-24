@@ -23,9 +23,14 @@ public class AdminInteractionController {
     }
 
     @PostMapping("/posts/{id}/hide")
-    public String hidePost(@PathVariable("id") Long id) {
-        System.out.println(">>> Controller: Hiding Post ID: " + id);
-        interactionService.hidePost(id);
+    public String hidePost(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println(">>> Controller: Hiding Post ID: " + id);
+            interactionService.hidePost(id);
+            redirectAttributes.addFlashAttribute("success", "Đã ẩn bài viết thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
+        }
         return "redirect:/admin/interactions/posts";
     }
 
@@ -37,8 +42,13 @@ public class AdminInteractionController {
     }
 
     @PostMapping("/posts/{id}/approve")
-    public String approvePost(@PathVariable("id") Long id) {
-        interactionService.approvePost(id);
+    public String approvePost(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            interactionService.approvePost(id);
+            redirectAttributes.addFlashAttribute("success", "Đã duyệt bài viết.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
+        }
         return "redirect:/admin/interactions/posts";
     }
 
@@ -49,9 +59,14 @@ public class AdminInteractionController {
     }
 
     @PostMapping("/posts/{id}/ban")
-    public String banPost(@PathVariable("id") Long id) {
-        System.out.println(">>> Controller: Banning Post ID: " + id);
-        interactionService.banPost(id);
+    public String banPost(@PathVariable("id") Long id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println(">>> Controller: Banning Post ID: " + id);
+            interactionService.banPost(id);
+            redirectAttributes.addFlashAttribute("success", "Đã BAN bài viết thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
+        }
         return "redirect:/admin/interactions/posts";
     }
 }

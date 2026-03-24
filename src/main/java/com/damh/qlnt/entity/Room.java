@@ -38,7 +38,7 @@ public class Room {
     private RoomStatus status = RoomStatus.AVAILABLE;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     @Builder.Default
     private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 

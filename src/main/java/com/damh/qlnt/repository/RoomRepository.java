@@ -13,6 +13,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT r FROM Room r WHERE r.owner = :owner AND r.approvalStatus <> com.damh.qlnt.entity.ApprovalStatus.DELETED")
     List<Room> findByOwner(@Param("owner") User owner);
 
+    List<Room> findAllByOrderByIdDesc();
+
     @Query("SELECT r FROM Room r WHERE r.approvalStatus = com.damh.qlnt.entity.ApprovalStatus.APPROVED " +
            "AND r.status = com.damh.qlnt.entity.RoomStatus.AVAILABLE " +
            "AND (:kw IS NULL OR LOWER(r.title) LIKE LOWER(CONCAT('%', :kw, '%')) OR LOWER(r.address) LIKE LOWER(CONCAT('%', :kw, '%'))) " +
