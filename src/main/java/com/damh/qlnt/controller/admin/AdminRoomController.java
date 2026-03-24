@@ -39,4 +39,10 @@ public class AdminRoomController {
         roomService.hideRoom(id);
         return "redirect:/admin/rooms";
     }
+
+    @PostMapping("/ban/{id}")
+    public String ban(@PathVariable Long id) {
+        roomService.banRoom(id);
+        return "redirect:/admin/rooms";
+    }
 }

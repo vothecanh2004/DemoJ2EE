@@ -21,6 +21,7 @@ public interface RoomService {
     void approveRoom(Long id);
     void rejectRoom(Long id, String reason);
     void hideRoom(Long id);
+    void banRoom(Long id);
 
     List<Room> searchRooms(String kw, Double minP, Double maxP, Double minA);
 }

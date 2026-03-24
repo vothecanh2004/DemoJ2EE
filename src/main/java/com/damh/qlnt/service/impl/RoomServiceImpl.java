@@ -110,6 +110,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public void banRoom(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+        room.setApprovalStatus(ApprovalStatus.BANNED);
+        roomRepository.save(room);
+    }
+
+    @Override
     public List<Room> searchRooms(String kw, Double minP, Double maxP, Double minA) {
         return roomRepository.searchRooms(kw, minP, maxP, minA);
     }

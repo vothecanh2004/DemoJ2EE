@@ -35,6 +35,7 @@
                     <span th:if="${post.status.name() == 'PENDING'}" class="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase rounded border border-amber-200 tracking-wider animate-pulse"><i class="fas fa-clock mr-1"></i> Đang Chờ Duyệt</span>
                     <span th:if="${post.status.name() == 'HIDDEN'}" class="px-2 py-1 bg-gray-200 text-gray-700 text-[10px] font-bold uppercase rounded border border-gray-300 tracking-wider"><i class="fas fa-eye-slash mr-1"></i> Bị Ẩn</span>
                     <span th:if="${post.status.name() == 'ACTIVE'}" class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase rounded border border-emerald-200 tracking-wider">Đang Hiện</span>
+                    <span th:if="${post.status.name() == 'BANNED'}" class="px-2 py-1 bg-red-600 text-white text-[10px] font-bold uppercase rounded border border-red-700 tracking-wider shadow-sm"><i class="fas fa-ban mr-1"></i> VI PHẠM (BANNED)</span>
                     
                     <span th:if="${post.type.name() == 'FIND_ROOM'}" class="px-2 py-1 bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase rounded border border-yellow-200 tracking-wider mt-1">Tìm Phòng</span>
                     <span th:if="${post.type.name() == 'REVIEW'}" class="px-2 py-1 bg-purple-100 text-purple-700 text-[10px] font-bold uppercase rounded border border-purple-200 tracking-wider mt-1">Review</span>
@@ -70,6 +71,13 @@
                 <form th:if="${post.status.name() == 'HIDDEN'}" th:action="@{/admin/interactions/posts/{id}/unhide(id=${post.id})}" method="post">
                     <button type="submit" class="px-4 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-xl hover:bg-indigo-100 border border-indigo-200 transition flex items-center shadow-sm">
                         <i class="fas fa-eye mr-2"></i> Mở Lại
+                    </button>
+                </form>
+
+                <!-- Ban Action (Always available for moderation unless already banned) -->
+                <form th:if="${post.status.name() != 'BANNED'}" th:action="@{/admin/interactions/posts/{id}/ban(id=${post.id})}" method="post" onsubmit="return confirm('CẤM bài viết này vĩnh viễn? Bài viết sẽ bị gỡ bỏ ngay lập tức.');">
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition flex items-center shadow-md">
+                        <i class="fas fa-ban mr-2"></i> Ban Post
                     </button>
                 </form>
             </div>

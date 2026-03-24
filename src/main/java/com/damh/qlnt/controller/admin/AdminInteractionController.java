@@ -45,4 +45,10 @@ public class AdminInteractionController {
         interactionService.rejectPost(id);
         return "redirect:/admin/interactions/posts";
     }
+
+    @PostMapping("/posts/{id}/ban")
+    public String banPost(@PathVariable Long id) {
+        interactionService.banPost(id);
+        return "redirect:/admin/interactions/posts";
+    }
 }

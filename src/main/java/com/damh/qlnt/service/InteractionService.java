@@ -13,6 +13,7 @@ public interface InteractionService {
     void unhidePost(Long postId);
     void approvePost(Long postId);
     void rejectPost(Long postId);
+    void banPost(Long postId);
     Optional<Post> getPostById(Long id);
     
     // Comment actions

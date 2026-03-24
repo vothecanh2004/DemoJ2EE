@@ -79,6 +79,14 @@ public class InteractionServiceImpl implements InteractionService {
     }
 
     @Override
+    public void banPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        post.setStatus(PostStatus.BANNED);
+        postRepository.save(post);
+    }
+
+    @Override
     public Optional<Post> getPostById(Long id) {
         return postRepository.findById(id);
     }
