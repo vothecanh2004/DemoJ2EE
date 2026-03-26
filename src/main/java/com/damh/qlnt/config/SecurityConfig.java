@@ -21,6 +21,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final UserStatusFilter userStatusFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -62,6 +63,8 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
             );
+
+        http.addFilterBefore(userStatusFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         http.authenticationProvider(authenticationProvider());
         

@@ -40,7 +40,10 @@
                 </td>
                 <td class="p-5 text-center">
                     <form th:if="${user.role.name() != 'ADMIN'}" th:action="@{/admin/users/toggle/{id}(id=${user.id})}" method="post">
-                        <button type="submit" th:classappend="${user.enabled} ? 'bg-red-50 text-red-600 hover:bg-red-100 border-red-200' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200'" class="px-4 py-2 border rounded-xl text-sm font-bold shadow-sm transition">
+                        <button type="submit" 
+                                th:onclick="'return confirm(\'Bạn có chắc chắn muốn ' + (${user.enabled} ? 'KHÓA' : 'MỞ KHÓA') + ' tài khoản này không?\')'"
+                                th:classappend="${user.enabled} ? 'bg-red-50 text-red-600 hover:bg-red-100 border-red-200' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-emerald-200'" 
+                                class="px-4 py-2 border rounded-xl text-sm font-bold shadow-sm transition">
                             <span th:if="${user.enabled}"><i class="fas fa-ban mr-1"></i> Khóa</span>
                             <span th:unless="${user.enabled}"><i class="fas fa-unlock mr-1"></i> Mở</span>
                         </button>
