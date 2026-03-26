@@ -51,6 +51,7 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(id).orElseThrow();
         
         // Manual Cascade Delete for child entities
+        roomRepository.deleteImagesByRoomId(id);
         favoriteRoomRepository.deleteAll(favoriteRoomRepository.findByRoom(room));
         appointmentRepository.deleteAll(appointmentRepository.findByRoom(room));
         contractRepository.deleteAll(contractRepository.findByRoom(room));

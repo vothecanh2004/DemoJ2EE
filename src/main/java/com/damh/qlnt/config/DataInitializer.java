@@ -2,6 +2,7 @@ package com.damh.qlnt.config;
 
 import com.damh.qlnt.entity.Role;
 import com.damh.qlnt.entity.User;
+import com.damh.qlnt.entity.Room;
 import com.damh.qlnt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -100,7 +101,7 @@ public class DataInitializer implements CommandLineRunner {
             User tenant = userRepository.findByUsername("user").orElseThrow();
 
             // Create Sample Rooms
-            com.damh.qlnt.entity.Room room1 = com.damh.qlnt.entity.Room.builder()
+            Room room1 = Room.builder()
                     .title("Phòng Trọ Cao Cấp Quận 1")
                     .description("Phòng đẹp, đầy đủ tiện nghi, gần trung tâm.")
                     .price(new java.math.BigDecimal("5000000"))
@@ -109,10 +110,11 @@ public class DataInitializer implements CommandLineRunner {
                     .status(com.damh.qlnt.entity.RoomStatus.AVAILABLE)
                     .approvalStatus(com.damh.qlnt.entity.ApprovalStatus.APPROVED)
                     .owner(owner)
+                    .imageUrl("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267")
                     .build();
             roomRepository.save(room1);
 
-            com.damh.qlnt.entity.Room room2 = com.damh.qlnt.entity.Room.builder()
+            Room room2 = Room.builder()
                     .title("Phòng Trọ Giá Rẻ Bình Thạnh")
                     .description("Phòng mới xây, thoáng mát, khu an ninh.")
                     .price(new java.math.BigDecimal("3000000"))
@@ -121,6 +123,7 @@ public class DataInitializer implements CommandLineRunner {
                     .status(com.damh.qlnt.entity.RoomStatus.AVAILABLE)
                     .approvalStatus(com.damh.qlnt.entity.ApprovalStatus.PENDING)
                     .owner(owner)
+                    .imageUrl("https://images.unsplash.com/photo-1502672260266-1c1ef2d93688")
                     .build();
             roomRepository.save(room2);
 
@@ -158,27 +161,5 @@ public class DataInitializer implements CommandLineRunner {
             postRepository.save(review);
         }
 
-        // Always ensure at least 10 rooms with "Demo" in the title exist for the owner
-        User ownerForExtra = userRepository.findByUsername("owner").orElseThrow();
-        if (roomRepository.findAll().stream().filter(r -> r.getTitle().contains("Demo")).count() < 10) {
-            String[] districts = {"Quận 3", "Quận 10", "Quận Tân Bình", "Quận Phú Nhuận", "Quận 7", "Quận 1", "Quận 3", "Quận 10", "Bình Thạnh", "Gò Vấp"};
-            for (int i = 1; i <= 10; i++) {
-                String title = "Phòng Trọ Demo " + i + " - " + districts[i-1];
-                if (roomRepository.findAll().stream().noneMatch(r -> r.getTitle().equals(title))) {
-                    com.damh.qlnt.entity.Room extraRoom = com.damh.qlnt.entity.Room.builder()
-                            .title(title)
-                            .description("Mô tả chi tiết cho phòng trọ số " + i + ". Tiện nghi cơ bản, internet tốc độ cao.")
-                            .price(new java.math.BigDecimal(2000000 + (i * i * 10000))) // Varied price
-                            .area(15.0 + i)
-                            .address("Hẻm " + (i * i) + " Đường ABC, " + districts[i-1])
-                            .status(com.damh.qlnt.entity.RoomStatus.AVAILABLE)
-                            .approvalStatus(i % 2 == 0 ? com.damh.qlnt.entity.ApprovalStatus.APPROVED : com.damh.qlnt.entity.ApprovalStatus.PENDING)
-                            .owner(ownerForExtra)
-                            .build();
-                    roomRepository.save(extraRoom);
-                }
-            }
-            System.out.println(">>> Đã tạo thêm 10 phòng trọ demo cho tài khoản owner.");
-        }
     }
 }

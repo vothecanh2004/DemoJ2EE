@@ -69,10 +69,21 @@
                             </div>
                             <p class="text-xs text-gray-500">PNG, JPG, GIF lên đến 10MB</p>
                             
-                            <!-- Preview if exists -->
-                            <div th:if="${room.imageUrl != null}" class="mt-4">
+                            <!-- single Image Preview Container -->
+                            <div id="newImagePreview" class="mt-4 hidden animate-in fade-in duration-300">
+                                <p class="text-xs font-bold text-green-600 mb-2 underline decoration-green-200">Ảnh mới sẽ tải lên:</p>
+                                <div class="relative inline-block group">
+                                    <img id="previewImg" src="#" class="h-44 w-auto mx-auto rounded-2xl shadow-xl border-2 border-green-400 ring-4 ring-green-50 object-cover">
+                                    <button type="button" onclick="clearImageSelection()" class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i class="fas fa-times text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Preview if exists (Current Image) -->
+                            <div th:if="${room.imageUrl != null}" id="currentImageArea" class="mt-4">
                                 <p class="text-xs font-semibold text-gray-400 mb-2">Ảnh hiện tại:</p>
-                                <img th:src="${room.imageUrl}" class="h-24 w-auto mx-auto rounded-lg shadow-sm border border-gray-200">
+                                <img th:src="${room.imageUrl}" class="h-24 w-auto mx-auto rounded-lg shadow-sm border border-gray-200 opacity-60">
                             </div>
                         </div>
                     </div>
@@ -87,5 +98,35 @@
         </form>
     </div>
 </div>
+<script layout:fragment="script">
+    const imageInput = document.getElementById('imageFile');
+    const previewContainer = document.getElementById('newImagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const currentImageArea = document.getElementById('currentImageArea');
+
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.classList.remove('hidden');
+                if (currentImageArea) {
+                    currentImageArea.classList.add('hidden');
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function clearImageSelection() {
+        imageInput.value = '';
+        previewContainer.classList.add('hidden');
+        previewImg.src = '#';
+        if (currentImageArea) {
+            currentImageArea.classList.remove('hidden');
+        }
+    }
+</script>
 </body>
 </html>

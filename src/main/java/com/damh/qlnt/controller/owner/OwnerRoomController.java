@@ -74,7 +74,6 @@ public class OwnerRoomController {
                                  @ModelAttribute Room room, 
                                  @RequestParam("imageFile") MultipartFile imageFile,
                                  Principal principal) throws IOException {
-        User owner = userRepository.findByUsername(principal.getName()).orElseThrow();
         Room existing = roomService.getRoomById(id).orElseThrow();
         existing.setTitle(room.getTitle());
         existing.setDescription(room.getDescription());

@@ -11,7 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import java.security.Principal;
+import java.util.Map;
+import java.net.URI;
 import java.time.LocalDateTime;
 
 @Controller
@@ -46,15 +51,23 @@ public class UserInteractionController {
     }
 
     @PostMapping("/posts/{postId}/like")
-    public String likePost(@PathVariable("postId") Long postId, Principal principal) {
+    public ResponseEntity<Object> likePost(@PathVariable("postId") Long postId, Principal principal, HttpServletRequest request) {
+        System.out.println("Like Request - X-Requested-With: " + request.getHeader("X-Requested-With"));
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         interactionService.toggleLike(user, postId);
-        return "redirect:/user/interactions/posts";
+        
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            Post post = interactionService.getPostById(postId).orElseThrow();
+            return ResponseEntity.ok(Map.of("success", true, "likesCount", post.getLikes().size()));
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/user/interactions/posts")).build();
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public String addComment(@PathVariable("postId") Long postId, @RequestParam("content") String content, 
-                             @RequestParam(value = "parentId", required = false) Long parentId, Principal principal) {
+    public ResponseEntity<Object> addComment(@PathVariable("postId") Long postId, @RequestParam("content") String content, 
+                             @RequestParam(value = "parentId", required = false) Long parentId, Principal principal,
+                             HttpServletRequest request) {
+        System.out.println("Comment Request - X-Requested-With: " + request.getHeader("X-Requested-With"));
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Post post = interactionService.getPostById(postId).orElseThrow();
         
@@ -69,7 +82,17 @@ public class UserInteractionController {
             builder.parent(parent);
         }
                 
-        interactionService.addComment(builder.build());
-        return "redirect:/user/interactions/posts";
+        Comment comment = interactionService.addComment(builder.build());
+        
+        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return ResponseEntity.ok(Map.of(
+                "success", true, 
+                "username", user.getUsername(),
+                "content", comment.getContent(),
+                "createdAt", LocalDateTime.now().toString(),
+                "commentId", comment.getId()
+            ));
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/user/interactions/posts")).build();
     }
 }

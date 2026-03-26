@@ -10,10 +10,12 @@ import com.damh.qlnt.entity.Room;
 import com.damh.qlnt.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
 
@@ -58,11 +60,13 @@ public class ContractServiceImpl implements ContractService {
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Contract not found"));
         contract.setEndDate(newEndDate);
+        contract.setStatus(ContractStatus.ACTIVE);
         contractRepository.save(contract);
     }
 
     @Override
     public void terminateContract(Long id, String reason) {
+        System.out.println(">>> Terminating Contract ID: " + id);
         Contract contract = contractRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Contract not found"));
         contract.setStatus(ContractStatus.TERMINATED);
@@ -70,6 +74,7 @@ public class ContractServiceImpl implements ContractService {
         contractRepository.save(contract);
         
         Room room = contract.getRoom();
+        System.out.println(">>> Setting Room ID: " + room.getId() + " to AVAILABLE");
         room.setStatus(RoomStatus.AVAILABLE);
         roomRepository.save(room);
     }

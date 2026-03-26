@@ -3,8 +3,10 @@ package com.damh.qlnt.repository;
 import com.damh.qlnt.entity.Room;
 import com.damh.qlnt.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -25,4 +27,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                           @Param("minP") Double minPrice, 
                           @Param("maxP") Double maxPrice, 
                           @Param("minA") Double minArea);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM room_images WHERE room_id = :roomId", nativeQuery = true)
+    void deleteImagesByRoomId(@Param("roomId") Long roomId);
 }
